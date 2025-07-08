@@ -17,7 +17,7 @@ class RouterMiddlewareTest extends TestCase
 {
     private function successRouter(): Router
     {
-        return $this->mockRouter(new RouteSuccess('success', 'GET'));
+        return $this->mockRouter(new RouteSuccess('success'));
     }
 
     private function mockRouter(RouteResult $result): Router

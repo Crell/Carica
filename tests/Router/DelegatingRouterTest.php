@@ -13,14 +13,13 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class DelegatingRouterTest extends TestCase
 {
-    private function defaultRouter(string $method): Router
+    private function defaultRouter(): Router
     {
-        return new readonly class($method) implements Router {
-            public function __construct(private string $method) {}
+        return new readonly class implements Router {
 
             public function route(ServerRequestInterface $request): RouteResult
             {
-                return new RouteSuccess(action: 'default', method: $this->method);
+                return new RouteSuccess(action: 'default');
             }
         };
     }
@@ -31,14 +30,13 @@ class DelegatingRouterTest extends TestCase
     #[TestWith(['method' => 'GET', 'url' => '/'])]
     public function defaultRouterReached(string $method, string $url): void
     {
-        $r = new DelegatingRouter($this->defaultRouter($method));
+        $r = new DelegatingRouter($this->defaultRouter());
 
         $result = $r->route(new ServerRequest($method, $url));
 
         self::assertInstanceOf(RouteSuccess::class, $result);
         self::assertIsString($result->action);
         self::assertEquals('default', $result->action);
-        self::assertEquals($method, $result->method);
     }
 
     #[Test, TestDox('A delegated router handles the correct routes')]
@@ -51,15 +49,14 @@ class DelegatingRouterTest extends TestCase
     #[TestWith(['method' => 'GET', 'url' => '/foobar', 'default'])]
     public function pathRouter(string $method, string $url, string $expected): void
     {
-        $r1 = new readonly class($method) implements Router {
-            public function __construct(private string $method) {}
+        $r1 = new readonly class() implements Router {
             public function route(ServerRequestInterface $request): RouteResult
             {
-                return new RouteSuccess('router1', $this->method);
+                return new RouteSuccess('router1');
             }
         };
 
-        $r = new DelegatingRouter($this->defaultRouter($method));
+        $r = new DelegatingRouter($this->defaultRouter());
         $r->delegateTo('/foo', $r1);
 
         $result = $r->route(new ServerRequest($method, $url));
@@ -67,6 +64,5 @@ class DelegatingRouterTest extends TestCase
         self::assertInstanceOf(RouteSuccess::class, $result);
         self::assertIsString($result->action);
         self::assertEquals($expected, $result->action);
-        self::assertEquals($method, $result->method);
     }
 }
