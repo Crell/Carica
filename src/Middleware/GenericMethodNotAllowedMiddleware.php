@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Router;
+namespace Crell\HttpTools\Middleware;
 
 use Crell\HttpTools\ResponseBuilder;
+use Crell\HttpTools\Router\RouteMethodNotAllowed;
+use Crell\HttpTools\Router\RouteResult;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -20,6 +22,12 @@ readonly class GenericMethodNotAllowedMiddleware implements MiddlewareInterface
     {
         $result = $request->getAttribute(RouteResult::class);
         if ($result instanceof RouteMethodNotAllowed) {
+            if ($request->getMethod() === 'OPTIONS') {
+                return $this->responseBuilder
+                    ->noContent()
+                    ->withHeader('allow', implode(', ', array_map(strtoupper(...), $result->allowedMethods)))
+                ;
+            }
             return $this->responseBuilder->methodNotAllowed($result->allowedMethods);
         }
 
