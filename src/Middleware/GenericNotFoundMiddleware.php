@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Router;
+namespace Crell\HttpTools\Middleware;
 
 use Crell\HttpTools\ResponseBuilder;
+use Crell\HttpTools\Router\RouteNotFound;
+use Crell\HttpTools\Router\RouteResult;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
