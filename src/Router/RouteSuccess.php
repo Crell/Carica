@@ -7,31 +7,23 @@ namespace Crell\HttpTools\Router;
 readonly class RouteSuccess implements RouteResult
 {
     /**
-     * @param array<string, string> $parameters
-     *   A map of parameters to the action, keyed by name, with their type as the value.
-     * @param array<string, mixed> $vars
+     * @param array<string, mixed> $arguments
      *   The placeholder arguments extracted from the route path.
      *
      */
     public function __construct(
         public string|\Closure $action,
-        public string $method,
-        public ?string $permission = null,
-        public array $parameters = [],
-        public array $vars = [],
+        public array $arguments = [],
     ) {}
 
     /**
-     * @param array<string, mixed> $vars
+     * @param array<string, mixed> $args
      */
-    public function withAddedVars(array $vars): self
+    public function withAddedArgs(array $args): self
     {
         return new self(
             action: $this->action,
-            method: $this->method,
-            permission: $this->permission,
-            parameters: $this->parameters,
-            vars: $vars + $this->vars,
+            arguments: $args + $this->arguments,
         );
     }
 }
