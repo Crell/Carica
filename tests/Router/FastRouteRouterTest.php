@@ -22,17 +22,17 @@ class FastRouteRouterTest extends TestCase
         yield 'static route' => [
             'route' => '/foo/bar',
             'method' => 'GET',
-            'handler' => 'ahandler',
+            'handler' => static fn() => 'ahandler',
             'request' => new ServerRequest('GET', '/foo/bar'),
-            'expectedResult' => new RouteSuccess('ahandler', []),
+            'expectedResult' => new RouteSuccess(static fn() => 'ahandler', []),
         ];
 
         yield 'placeholder route' => [
             'route' => '/foo/{bar}/baz',
             'method' => 'GET',
-            'handler' => 'ahandler',
+            'handler' => static fn() => 'ahandler',
             'request' => new ServerRequest('GET', '/foo/beep/baz'),
-            'expectedResult' => new RouteSuccess('ahandler', ['bar' => 'beep']),
+            'expectedResult' => new RouteSuccess(static fn() => 'ahandler', ['bar' => 'beep']),
         ];
     }
 
@@ -40,11 +40,12 @@ class FastRouteRouterTest extends TestCase
     public function routeResults(
         string $route,
         string $method = 'GET',
-        string $handler = '',
+        ?\Closure $handler = null,
         ?ServerRequestInterface $request = null,
         ?RouteResult $expectedResult = null,
     ): void
     {
+        self::assertNotNull($handler);
         self::assertNotNull($request);
         self::assertNotNull($expectedResult);
 

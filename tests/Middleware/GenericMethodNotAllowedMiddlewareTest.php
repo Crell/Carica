@@ -24,7 +24,7 @@ class GenericMethodNotAllowedMiddlewareTest extends TestCase
     {
         yield 'success' => [
             'request' => new ServerRequest('GET', '/foo/bar')
-                ->withAttribute(RouteResult::class, new RouteSuccess('ahandler')),
+                ->withAttribute(RouteResult::class, new RouteSuccess(static fn() => 'ahandler')),
             'expectedStatus' => 200,
             'expectedMessage' => 'from next',
         ];
