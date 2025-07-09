@@ -1,5 +1,16 @@
 parameters:
-	level: 8
-	paths:
-		- src
-		- tests
+    level: 8
+    paths:
+        - src
+        - tests
+    ignoreErrors:
+        # PHPStan doesn't understand PHPUnit's self-termination methods.
+        - message: '#Unreachable statement - code above always terminates.#'
+          paths:
+            - tests/*
+          reportUnmatched: false
+        # PHPStan is overly aggressive on readonly properties.
+        - message: '#Class (.*) has an uninitialized readonly property (.*). Assign it in the constructor.#'
+          reportUnmatched: false
+        - message: '#Readonly property (.*) is assigned outside of the constructor.#'
+          reportUnmatched: false
