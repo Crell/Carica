@@ -22,6 +22,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  * Setting the response will terminate the event.
  *
  * @see https://github.com/Crell/Tukio
+ * @see HandleRouteNotFound
  */
 readonly class EventedNotFoundMiddleware implements MiddlewareInterface
 {

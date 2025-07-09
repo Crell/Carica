@@ -22,6 +22,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  * response will terminate the event.
  *
  * @see https://github.com/Crell/Tukio
+ * @see HandleMethodNotAllowed
  */
 readonly class EventedMethodNotAllowedMiddleware implements MiddlewareInterface
 {
