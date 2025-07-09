@@ -6,7 +6,6 @@ namespace Crell\HttpTools\Router\EventedRouter;
 
 use Crell\HttpTools\ResponseBuilder;
 use Crell\HttpTools\Router\EventedRouter\Events\HandleMethodNotAllowed;
-use Crell\HttpTools\Router\EventedRouter\Events\HandleRouteNotFound;
 use Crell\HttpTools\Router\RouteMethodNotAllowed;
 use Crell\HttpTools\Router\RouteResult;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -36,7 +35,7 @@ readonly class EventedMethodNotAllowedMiddleware implements MiddlewareInterface
         // If $result is null for some reason, this middleware will silently do nothing.
         $result = $request->getAttribute(RouteResult::class);
         if ($result instanceof RouteMethodNotAllowed) {
-            /** @var HandleRouteNotFound $event */
+            /** @var HandleMethodNotAllowed $event */
             $event = $this->dispatcher->dispatch(new HandleMethodNotAllowed($request));
             return $event->response ?? $this->responseBuilder->notFound('Not Found', 'text/plain');
         }
