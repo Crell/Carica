@@ -17,7 +17,14 @@ readonly class FastRouteRouter implements Router
 
     public function route(ServerRequestInterface $request): RouteResult
     {
-        $routeInfo = $this->dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());
+        // To allow query parameters to be part of routing.
+        // @todo I'm not sure if this is even a good idea.
+        $path = $request->getUri()->getPath();
+//        if ($query = $request->getUri()->getQuery()) {
+//            $path .= '?' . $query;
+//        }
+
+        $routeInfo = $this->dispatcher->dispatch($request->getMethod(), $path);
 
         return $this->toRouteResult($routeInfo);
     }

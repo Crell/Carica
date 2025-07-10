@@ -34,6 +34,20 @@ class FastRouteRouterTest extends TestCase
             'request' => new ServerRequest('GET', '/foo/beep/baz'),
             'expectedResult' => new RouteSuccess(static fn() => 'ahandler', ['bar' => 'beep']),
         ];
+
+        /* This requires a hack in FastRouteRouter, which I'm not sure we want.
+        yield 'query parameter route, success' => [
+            'route' => '/foo/{bar}/baz?beep={beep}&qix={qix}',
+            'method' => 'GET',
+            'handler' => static fn() => 'ahandler',
+            'request' => new ServerRequest('GET', '/foo/barval/baz?beep=beepval&qix=qixval'),
+            'expectedResult' => new RouteSuccess(static fn() => 'ahandler', [
+                'bar' => 'barval',
+                'beep' => 'beepval',
+                'qix' => 'qixval',
+            ]),
+        ];
+        */
     }
 
     #[Test, DataProvider('routeExamples')]
