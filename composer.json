@@ -19,6 +19,7 @@
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
+        "crell/serde": "^1.5",
         "fig/log-test": "^1.1",
         "nikic/fast-route": "^1.3",
         "nyholm/psr7": "^1.8",
@@ -27,6 +28,9 @@
         "phpunit/phpunit": "^10.5.46",
         "psr/event-dispatcher": "^1.0",
         "psr/log": "^3.0"
+    },
+    "suggest": {
+        "crell/serde": "A powerful serializer/deserializer that can make quick work of request bodies and action results."
     },
     "autoload": {
         "psr-4": {
