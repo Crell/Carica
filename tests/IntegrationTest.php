@@ -113,7 +113,7 @@ class IntegrationTest extends TestCase
             new GenericMethodNotAllowedMiddleware($responseBuilder),
             new DeriveActionParametersMiddleware(),
             new QueryParametersMiddleware(),
-            new NormalizeScalarArgumentsMiddleware(),
+            new NormalizeScalarArgumentsMiddleware($responseBuilder),
         ]);
 
         $response = $stack->handle($request);

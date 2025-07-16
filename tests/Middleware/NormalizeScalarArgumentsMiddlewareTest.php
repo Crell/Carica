@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Crell\HttpTools\Middleware;
 
+use Crell\HttpTools\ResponseBuilder;
 use Crell\HttpTools\Router\FakeNext;
 use Crell\HttpTools\Router\RouteResult;
 use Crell\HttpTools\Router\RouteSuccess;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -68,7 +70,10 @@ class NormalizeScalarArgumentsMiddlewareTest extends TestCase
     #[TestDox('We can normalize from $_dataName')]
     public function typeMapping(string $type, mixed $value, mixed $expectedValue): void
     {
-        $middleware = new NormalizeScalarArgumentsMiddleware();
+        $psr17Factory = new Psr17Factory();
+        $responseBuilder = new ResponseBuilder($psr17Factory, $psr17Factory);
+
+        $middleware = new NormalizeScalarArgumentsMiddleware($responseBuilder);
 
         $result = new RouteSuccess(
             action: fn(string $a) => $a,

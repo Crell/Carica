@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Crell\HttpTools\Middleware;
 
+use Crell\HttpTools\ResponseBuilder;
 use Crell\HttpTools\Router\RouteResult;
 use Crell\HttpTools\Router\RouteSuccess;
 use Psr\Http\Message\ResponseInterface;
@@ -18,11 +19,23 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class NormalizeScalarArgumentsMiddleware implements MiddlewareInterface
 {
+    public function __construct(
+        private readonly ResponseBuilder $responseBuilder,
+    ) {}
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $result = $request->getAttribute(RouteResult::class);
         if ($result instanceof RouteSuccess && $result->parameters !== null) {
-            $newArgs = $this->normalizeValues($result->arguments, $result->parameters);
+            $newArgs = [];
+            foreach (array_intersect_key($result->arguments, $result->parameters) as $name => $val) {
+                $normalizedValue = $this->normalizeValue($name, $val, $result->parameters[$name]);
+                if ($normalizedValue instanceof CannotNormalizeValue) {
+                    // @todo Make this pluggable?
+                    return $this->responseBuilder->badRequest(sprintf('The %s parameter expects a %s. %s provided.', $name, $result->parameters[$name], get_debug_type($val)));
+                }
+                $newArgs[$name] = $normalizedValue;
+            }
             $result = $result->withAddedArgs($newArgs);
             $request = $request->withAttribute(RouteResult::class, $result);
         }
@@ -30,31 +43,32 @@ class NormalizeScalarArgumentsMiddleware implements MiddlewareInterface
         return $handler->handle($request);
     }
 
-    /**
-     * @param array<string, mixed> $arguments
-     * @param array<string, string> $parameters
-     * @return array<string, mixed>
-     */
-    private function normalizeValues(array $arguments, array $parameters): array
+    private function normalizeValue(string $name, mixed $value, string $type): mixed
     {
-        $newArgs = [];
-        foreach (array_intersect_key($arguments, $parameters) as $k => $val) {
-            $replacement = match ($parameters[$k]) {
-                'string' => $val,
-                'float' => is_numeric($val)
-                    ? (float)$val
-                    : throw new \Exception('Todo: Better error'),
-                'int' => (is_numeric($val) && floor((float)$val) === (float)$val)
-                    ? (int)$val
-                    : throw new \Exception('Todo: Better error'),
-                'bool' => in_array(strtolower($val), [1, '1', 'true', 'yes', 'on'], false),
-                // If the parameter type is an array or object, assume someone else will handle it.
-                default => null,
-            };
-            if ($replacement !== null) {
-                $newArgs[$k] = $replacement;
-            }
+        if ($type === 'string') {
+            return (string)$value;
         }
-        return $newArgs;
+        if ($type === 'float') {
+            if (is_numeric($value)) {
+                return (float)$value;
+            }
+            return new CannotNormalizeValue();
+        }
+
+        if ($type === 'int') {
+            if ((is_numeric($value) && floor((float)$value) === (float)$value)) {
+                return (int)$value;
+            }
+            return new CannotNormalizeValue();
+        }
+
+        // Allow various standard boolean-esque terms to fold to boolean.
+        if ($type === 'bool') {
+            return (in_array(strtolower($value), [1, '1', 'true', 'yes', 'on'], false));
+        }
+
+        // @todo Put mechanism for handling upcasters here.
+
+        return $value;
     }
 }
