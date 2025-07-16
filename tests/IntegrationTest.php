@@ -11,12 +11,14 @@ use Crell\HttpTools\Middleware\EnforceHeadMiddleware;
 use Crell\HttpTools\Middleware\GenericMethodNotAllowedMiddleware;
 use Crell\HttpTools\Middleware\GenericNotFoundMiddleware;
 use Crell\HttpTools\Middleware\NormalizeArgumentTypesMiddleware;
+use Crell\HttpTools\Middleware\ParsedBodyMiddleware;
 use Crell\HttpTools\Middleware\QueryParametersMiddleware;
 use Crell\HttpTools\Router\ActionDispatcher;
 use Crell\HttpTools\Router\JsonResultRenderer;
 use Crell\HttpTools\Router\RouteResult;
 use Crell\HttpTools\Router\RouterMiddleware;
 use Crell\HttpTools\Router\RouteSuccess;
+use Crell\Serde\SerdeCommon;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -89,6 +91,16 @@ class IntegrationTest extends TestCase
                 self::assertSame(['baz' => '1'], $json);
             },
         ];
+
+        yield 'JSON body' => [
+            'request' => new ServerRequest('POST', '/foo/bar', body: '{"x": 3, "y": 5}'),
+            'routeResult' => new RouteSuccess(action: fn(#[ParsedBody] Point $body) => ['body' => $body, 'x' => $body->x]),
+            'expectedStatus' => 200,
+            'tests' => function (ResponseInterface $response, string $body) {
+                $json = json_decode($body, true);
+                self::assertSame(['body' => ['x' => 3, 'y' => 5], 'x' => 3], $json);
+            },
+        ];
     }
 
     #[Test, TestDox('A standard middleware configuration works as expected')]
@@ -114,6 +126,9 @@ class IntegrationTest extends TestCase
             new DeriveActionParametersMiddleware(),
             new QueryParametersMiddleware(),
             new NormalizeArgumentTypesMiddleware($responseBuilder),
+            new ParsedBodyMiddleware($responseBuilder, [
+                new SerdeBodyParser(new SerdeCommon()),
+            ])
         ]);
 
         $response = $stack->handle($request);
