@@ -17,7 +17,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  *
  * If possible, it will convert them.  (Eg, from a numeric string to an int.)
  */
-class NormalizeScalarArgumentsMiddleware implements MiddlewareInterface
+class NormalizeArgumentTypesMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private readonly ResponseBuilder $responseBuilder,

@@ -10,7 +10,7 @@ use Crell\HttpTools\Middleware\DeriveActionParametersMiddleware;
 use Crell\HttpTools\Middleware\EnforceHeadMiddleware;
 use Crell\HttpTools\Middleware\GenericMethodNotAllowedMiddleware;
 use Crell\HttpTools\Middleware\GenericNotFoundMiddleware;
-use Crell\HttpTools\Middleware\NormalizeScalarArgumentsMiddleware;
+use Crell\HttpTools\Middleware\NormalizeArgumentTypesMiddleware;
 use Crell\HttpTools\Middleware\QueryParametersMiddleware;
 use Crell\HttpTools\Router\ActionDispatcher;
 use Crell\HttpTools\Router\JsonResultRenderer;
@@ -113,7 +113,7 @@ class IntegrationTest extends TestCase
             new GenericMethodNotAllowedMiddleware($responseBuilder),
             new DeriveActionParametersMiddleware(),
             new QueryParametersMiddleware(),
-            new NormalizeScalarArgumentsMiddleware($responseBuilder),
+            new NormalizeArgumentTypesMiddleware($responseBuilder),
         ]);
 
         $response = $stack->handle($request);

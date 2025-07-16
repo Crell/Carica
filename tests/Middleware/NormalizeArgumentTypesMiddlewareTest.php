@@ -15,7 +15,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 
-class NormalizeScalarArgumentsMiddlewareTest extends TestCase
+class NormalizeArgumentTypesMiddlewareTest extends TestCase
 {
     public static function typeMappingExamples(): \Generator
     {
@@ -55,12 +55,12 @@ class NormalizeScalarArgumentsMiddlewareTest extends TestCase
             'expectedValue' => 3.14,
         ];
         yield 'string to object (ignored)' => [
-            'type' => NormalizeScalarArgumentsMiddleware::class, // Doesn't matter, just need a class name.
+            'type' => NormalizeArgumentTypesMiddleware::class, // Doesn't matter, just need a class name.
             'value' => 'hello',
             'expectedValue' => 'hello',
         ];
         yield 'int to object (ignored)' => [
-            'type' => NormalizeScalarArgumentsMiddleware::class, // Doesn't matter, just need a class name.
+            'type' => NormalizeArgumentTypesMiddleware::class, // Doesn't matter, just need a class name.
             'value' => 5,
             'expectedValue' => 5,
         ];
@@ -73,7 +73,7 @@ class NormalizeScalarArgumentsMiddlewareTest extends TestCase
         $psr17Factory = new Psr17Factory();
         $responseBuilder = new ResponseBuilder($psr17Factory, $psr17Factory);
 
-        $middleware = new NormalizeScalarArgumentsMiddleware($responseBuilder);
+        $middleware = new NormalizeArgumentTypesMiddleware($responseBuilder);
 
         $result = new RouteSuccess(
             action: fn(string $a) => $a,
