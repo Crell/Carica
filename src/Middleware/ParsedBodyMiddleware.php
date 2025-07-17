@@ -35,54 +35,38 @@ class ParsedBodyMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $bodyParamName = null;
-        $bodyType = null;
-
         $result = $request->getAttribute(RouteResult::class) ?? throw new RouteResultNotProvided();
 
-        if ($result instanceof RouteSuccess) {
-            $rParams = new \ReflectionFunction($result->action)->getParameters();
-
-            $getAttribute = static fn (\ReflectionParameter $rParam)
-                => ($rParam->getAttributes(ParsedBody::class, \ReflectionAttribute::IS_INSTANCEOF)[0] ?? null) !== null;
-
-            $rBodyParam = array_find($rParams, $getAttribute);
-
-            if ($rBodyParam) {
-                $bodyParamName = $rBodyParam->getName();
-                $rType = $rBodyParam->getType();
-                if (!$rType instanceof \ReflectionNamedType) {
-                    // Using a union type is a dev error, hence 500.
-                    return $this->responseBuilder->createResponse(
-                        HttpStatus::ServerError,
-                        sprintf('Only simple parameter types are supported on %s', $bodyParamName)
-                    );
-                }
-                $bodyType = $rType->getName();
-            }
-        }
-
-        if ($bodyParamName && $bodyType) {
+        // We're doing a weak truthy check here, so that both null and '' values
+        // result in not doing anything.
+        if ($result instanceof RouteSuccess && $result->parsedBodyParameter && $result->parameters !== null) {
             /** @var class-string $bodyType */
+            $bodyType = $result->parameters[$result->parsedBodyParameter];
             $contentType = $request->getHeaderLine('content-type');
 
-            $canParse = static fn(BodyParser $p) => $p->canParse($contentType, $bodyType);
-
-            /** @var ?BodyParser $parser */
-            $parser = array_find($this->parsers, $canParse);
-
-            $parsed = $parser?->parse($contentType, $request->getBody()->getContents(), $bodyType);
+            $parsed = $this
+                ->getParser($contentType, $bodyType)
+                ?->parse($contentType, $request->getBody()->getContents(), $bodyType);
 
             if ($parsed instanceof BodyParserError) {
                 return $this->responseBuilder->badRequest($parsed->message);
             }
             if ($parsed !== null) {
                 $request = $request
-                    ->withParsedBody($parsed)
-                    ->withAttribute(ParsedBody::class, $bodyParamName);
+                    ->withParsedBody($parsed);
             }
         }
 
         return $handler->handle($request);
+    }
+
+    /**
+     * @phpstan-param class-string $bodyType
+     */
+    private function getParser(string $contentType, string $bodyType): ?BodyParser
+    {
+        $canParse = static fn(BodyParser $p) => $p->canParse($contentType, $bodyType);
+
+        return array_find($this->parsers, $canParse);
     }
 }

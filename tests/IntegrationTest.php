@@ -6,7 +6,7 @@ namespace Crell\HttpTools;
 
 use Crell\HttpTools\Middleware\CacheHeaderMiddleware;
 use Crell\HttpTools\Middleware\DefaultContentTypeMiddleware;
-use Crell\HttpTools\Middleware\DeriveActionParametersMiddleware;
+use Crell\HttpTools\Middleware\DeriveActionMetadatMiddleware;
 use Crell\HttpTools\Middleware\EnforceHeadMiddleware;
 use Crell\HttpTools\Middleware\GenericMethodNotAllowedMiddleware;
 use Crell\HttpTools\Middleware\GenericNotFoundMiddleware;
@@ -123,7 +123,7 @@ class IntegrationTest extends TestCase
             new RouterMiddleware(new MockRouter($routeResult)),
             new GenericNotFoundMiddleware($responseBuilder),
             new GenericMethodNotAllowedMiddleware($responseBuilder),
-            new DeriveActionParametersMiddleware(),
+            new DeriveActionMetadatMiddleware(),
             new QueryParametersMiddleware(),
             new NormalizeArgumentTypesMiddleware($responseBuilder),
             new ParsedBodyMiddleware($responseBuilder, [

@@ -24,36 +24,39 @@ class ParsedBodyMiddlewareTest extends TestCase
     {
         yield 'JSON body, no param' => [
             'body' => '{"x": 3, "y": 5}',
-            'action' => fn() => 'action',
+            'routeResult' => new RouteSuccess(
+                action: fn() => 'action',
+                parameters: [],
+                parsedBodyParameter: '',
+            ),
             'expectedParsedBody' => null,
-            'expectedParsedBodyName' => null,
         ];
 
         yield 'JSON body, body param' => [
             'body' => '{"x": 3, "y": 5}',
-            'action' => fn(#[ParsedBody] Point $body) => $body,
+            'routeResult' => new RouteSuccess(
+                action: fn(#[ParsedBody] Point $body) => $body,
+                parameters: ['body' => Point::class],
+                parsedBodyParameter: 'body',
+            ),
             'expectedParsedBody' => new Point(3, 5),
-            'expectedParsedBodyName' => 'body',
         ];
     }
 
     #[Test, DataProvider('bodyParsingExamples')]
-    public function bodyParsing(string $body, \Closure $action, mixed $expectedParsedBody, ?string $expectedParsedBodyName): void
+    public function bodyParsing(string $body, RouteResult $routeResult, mixed $expectedParsedBody): void
     {
         $psr17Factory = new Psr17Factory();
         $responseBuilder = new ResponseBuilder($psr17Factory, $psr17Factory);
 
         $middleware = new ParsedBodyMiddleware($responseBuilder, [new SerdeBodyParser(new SerdeCommon())]);
 
-        $result = new RouteSuccess(
-            $action,
-        );
         $request = new ServerRequest(
             method: 'GET',
             uri: '/foo/bar',
             headers: ['content-type' => 'application/json'],
             body: $body)
-            ->withAttribute(RouteResult::class, $result)
+            ->withAttribute(RouteResult::class, $routeResult)
         ;
 
         $fakeNext = new FakeNext();
@@ -64,6 +67,5 @@ class ParsedBodyMiddlewareTest extends TestCase
         $updatedResult = $fakeNext->request->getAttribute(RouteResult::class);
 
         self::assertEquals($expectedParsedBody, $fakeNext->request->getParsedBody());
-        self::assertEquals($expectedParsedBodyName, $fakeNext->request->getAttribute(ParsedBody::class));
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Crell\HttpTools\Router;
 
-use Crell\HttpTools\ParsedBody;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -43,7 +42,7 @@ readonly class ActionDispatcher implements RequestHandlerInterface
 
         // If there is a parsed body, and an instruction of where to put it,
         // pass that in, too.
-        if ($bodyParam = $request->getAttribute(ParsedBody::class)) {
+        if ($bodyParam = $routeResult->parsedBodyParameter) {
             $available[$bodyParam] = $request->getParsedBody();
         }
 
