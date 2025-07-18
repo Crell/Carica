@@ -26,11 +26,13 @@ class DeriveActionMetadatMiddleware implements MiddlewareInterface
 
         if (($result instanceof RouteSuccess)) {
             if ($result->parameters === null) {
-                $parameters = $this->deriveParameters($result->action);
+                $rParams = new \ReflectionFunction($result->action)->getParameters();
+                $parameters = $this->deriveParameters($result->action, $rParams);
                 $result = $result->withParams($parameters);
             }
             if ($result->parsedBodyParameter === null) {
-                $bodyParam = $this->deriveParsedBodyParam($result->action);
+                $rParams ??= new \ReflectionFunction($result->action)->getParameters();
+                $bodyParam = $this->deriveParsedBodyParam($result->action, $rParams);
                 $result = $result->withParsedBodyParameter($bodyParam);
             }
             $request = $request->withAttribute(RouteResult::class, $result);
@@ -39,10 +41,11 @@ class DeriveActionMetadatMiddleware implements MiddlewareInterface
         return $handler->handle($request);
     }
 
-    private function deriveParsedBodyParam(\Closure $action): string
+    /**
+     * @param \ReflectionParameter[] $rParams
+     */
+    private function deriveParsedBodyParam(\Closure $action, array $rParams): string
     {
-        $rParams = new \ReflectionFunction($action)->getParameters();
-
         $getAttribute = static fn (\ReflectionParameter $rParam)
             => ($rParam->getAttributes(ParsedBody::class, \ReflectionAttribute::IS_INSTANCEOF)[0] ?? null) !== null;
 
@@ -53,11 +56,11 @@ class DeriveActionMetadatMiddleware implements MiddlewareInterface
     }
 
     /**
+     * @param \ReflectionParameter[] $rParams
      * @return array<string, string>
      */
-    private function deriveParameters(\Closure $action): array
+    private function deriveParameters(\Closure $action, array $rParams): array
     {
-        $rParams = new \ReflectionFunction($action)->getParameters();
         // @todo Better handle union types, which I doubt are supportable.
         return array_combine(
             amap(method('getName'))($rParams),
