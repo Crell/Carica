@@ -52,7 +52,7 @@ class DeriveActionMetadataMiddlewareTest extends TestCase
         string $expectedBodyParameter,
     ): void
     {
-        $middleware = new DeriveActionMetadatMiddleware();
+        $middleware = new DeriveActionMetadataMiddleware();
 
         $request = new ServerRequest('GET', $uri)
             ->withAttribute(RouteResult::class, $routeResult)

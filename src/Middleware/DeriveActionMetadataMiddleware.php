@@ -22,7 +22,7 @@ use function Crell\fp\method;
 /**
  * If the RouteResult does not already have the action metadata, derive them.
  */
-readonly class DeriveActionMetadatMiddleware implements MiddlewareInterface
+readonly class DeriveActionMetadataMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private FunctionAnalyzer $analyzer = new MemoryCacheFunctionAnalyzer(new FuncAnalyzer()),
