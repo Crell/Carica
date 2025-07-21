@@ -9,8 +9,7 @@ interface ActionMetadata
     /**
      * A map of the parameters of an action.
      *
-     * The key is the name, the value is its type. This may be provided by the
-     * routing process.
+     * The key is the name, the value is its type.
      *
      * @var array<string, string>
      */
@@ -19,9 +18,15 @@ interface ActionMetadata
     /**
      * The name of the parameter that should receive the parsed body.
      *
+     * null to indicate no parameter wants the parsed body.
      */
     public? string $parsedBodyParameter { get; }
 
 
+    /**
+     * The name of the parameter that should receive the request object.
+     *
+     * null to indicate no parameter wants the request object.
+     */
     public ?string $requestParameter { get; }
 }
