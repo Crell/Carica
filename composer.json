@@ -26,7 +26,7 @@
         "nyholm/psr7": "^1.8",
         "phpbench/phpbench": "^1.4.1",
         "phpstan/phpstan": "^2.1.11",
-        "phpunit/phpunit": "^10.5.46",
+        "phpunit/phpunit": "^12.2.7",
         "psr/event-dispatcher": "^1.0",
         "psr/log": "^3.0"
     },
