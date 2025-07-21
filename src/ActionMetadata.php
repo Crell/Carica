@@ -4,37 +4,28 @@ declare(strict_types=1);
 
 namespace Crell\HttpTools;
 
-use Crell\AttributeUtils\ParseParameters;
-
-#[\Attribute(\Attribute::TARGET_FUNCTION | \Attribute::TARGET_METHOD)]
-class ActionMetadata implements ParseParameters
+interface ActionMetadata
 {
-    public private(set) ?string $parsedBodyParameter;
-
     /**
+     * A map of the parameters of an action.
+     *
+     * The key is the name, the value is its type. This may be provided by the
+     * routing process. If it isn't, they can be filled in by a later process. An empty array means there are no parameters.
+     *    null indicates they have not been determined yet.
+     *
      * @var array<string, string|null>|null
      */
-    public private(set) ?array $parameterTypes;
+
+    public ?array $parameterTypes { get; }
 
     /**
-     * @param array<string, ActionParameter> $parameters
-     * @return void
+     * The name of the parameter that should receive the parsed body.
+     * This may be provided by the routing process.  If it isn't, it can
+     * be filled in by a later process.  AN empty string means there is
+     * no body parameter. null indicates it has not yet been determined.
      */
-    public function setParameters(array $parameters): void
-    {
-        foreach ($parameters as $name => $p) {
-            $this->parameterTypes[$name] = $p->typeDef->getSimpleType();
-        }
-        $this->parsedBodyParameter = array_find_key($parameters, static fn(ActionParameter $p) => $p instanceof ParsedBody);
-    }
+    public? string $parsedBodyParameter { get; }
 
-    public function includeParametersByDefault(): bool
-    {
-        return true;
-    }
 
-    public function parameterAttribute(): string
-    {
-        return ActionParameter::class;
-    }
+    public ?string $requestParameter { get; }
 }

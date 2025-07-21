@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Crell\HttpTools\Middleware;
 
+use Crell\HttpTools\ExplicitActionMetadata;
 use Crell\HttpTools\ParsedBody;
 use Crell\HttpTools\Point;
 use Crell\HttpTools\ResponseBuilder;
@@ -26,8 +27,7 @@ class ParsedBodyMiddlewareTest extends TestCase
             'body' => '{"x": 3, "y": 5}',
             'routeResult' => new RouteSuccess(
                 action: fn() => 'action',
-                parameters: [],
-                parsedBodyParameter: '',
+                actionDef: new ExplicitActionMetadata([], ''),
             ),
             'expectedParsedBody' => null,
         ];
@@ -36,8 +36,7 @@ class ParsedBodyMiddlewareTest extends TestCase
             'body' => '{"x": 3, "y": 5}',
             'routeResult' => new RouteSuccess(
                 action: fn(#[ParsedBody] Point $body) => $body,
-                parameters: ['body' => Point::class],
-                parsedBodyParameter: 'body',
+                actionDef: new ExplicitActionMetadata(['body' => Point::class], 'body'),
             ),
             'expectedParsedBody' => new Point(3, 5),
         ];

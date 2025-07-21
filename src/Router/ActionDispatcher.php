@@ -28,21 +28,18 @@ readonly class ActionDispatcher implements RequestHandlerInterface
         /** @var RouteSuccess $routeResult */
         $routeResult = $request->getAttribute(RouteResult::class) ?? throw new RouteResultNotProvided();
 
-        $definedParams = $routeResult->parameters ?? [];
+        $definedParams = $routeResult->actionDef->parameterTypes ?? [];
         $available = $routeResult->arguments;
 
-        // Have to check the types to avoid possible name collisions.
         // Passing the request itself has to happen last, in case
         // previous middleware layers modified it.
-        foreach ($definedParams as $name => $type) {
-            if (is_a($type, ServerRequestInterface::class, true)) {
-                $available[$name] = $request;
-            }
+        if ($routeResult->actionDef->requestParameter) {
+            $available[$routeResult->actionDef->requestParameter] = $request;
         }
 
         // If there is a parsed body, and an instruction of where to put it,
         // pass that in, too.
-        if ($bodyParam = $routeResult->parsedBodyParameter) {
+        if ($bodyParam = $routeResult->actionDef->parsedBodyParameter) {
             $available[$bodyParam] = $request->getParsedBody();
         }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Crell\HttpTools\Middleware;
 
+use Crell\HttpTools\ExplicitActionMetadata;
 use Crell\HttpTools\ResponseBuilder;
 use Crell\HttpTools\Router\FakeNext;
 use Crell\HttpTools\Router\RouteResult;
@@ -78,7 +79,7 @@ class NormalizeArgumentTypesMiddlewareTest extends TestCase
         $result = new RouteSuccess(
             action: fn(string $a) => $a,
             arguments: ['a' => $value],
-            parameters: ['a' => $type],
+            actionDef: new ExplicitActionMetadata(['a' => $type]),
         );
         $request = new ServerRequest('GET', '/foo/bar')
             ->withAttribute(RouteResult::class, $result)

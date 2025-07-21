@@ -26,13 +26,13 @@ class NormalizeArgumentTypesMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $result = $request->getAttribute(RouteResult::class);
-        if ($result instanceof RouteSuccess && $result->parameters !== null) {
+        if ($result instanceof RouteSuccess && $result->actionDef?->parameterTypes !== null) {
             $newArgs = [];
-            foreach (array_intersect_key($result->arguments, $result->parameters) as $name => $val) {
-                $normalizedValue = $this->normalizeValue($name, $val, $result->parameters[$name]);
+            foreach (array_intersect_key($result->arguments, $result->actionDef->parameterTypes) as $name => $val) {
+                $normalizedValue = $this->normalizeValue($name, $val, $result->actionDef?->parameterTypes[$name]);
                 if ($normalizedValue instanceof CannotNormalizeValue) {
                     // @todo Make this pluggable?
-                    return $this->responseBuilder->badRequest(sprintf('The %s parameter expects a %s. %s provided.', $name, $result->parameters[$name], get_debug_type($val)));
+                    return $this->responseBuilder->badRequest(sprintf('The %s parameter expects a %s. %s provided.', $name, $result->actionDef->parameterTypes[$name], get_debug_type($val)));
                 }
                 $newArgs[$name] = $normalizedValue;
             }

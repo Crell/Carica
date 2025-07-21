@@ -65,7 +65,7 @@ class DeriveActionMetadataMiddlewareTest extends TestCase
         /** @var RouteSuccess $updatedResult */
         $updatedResult = $fakeNext->request->getAttribute(RouteResult::class);
 
-        self::assertEquals($expectedParameters, $updatedResult->parameters);
-        self::assertEquals($expectedBodyParameter, $updatedResult->parsedBodyParameter);
+        self::assertEquals($expectedParameters, $updatedResult->actionDef?->parameterTypes);
+        self::assertEquals($expectedBodyParameter, $updatedResult->actionDef?->parsedBodyParameter);
     }
 }
