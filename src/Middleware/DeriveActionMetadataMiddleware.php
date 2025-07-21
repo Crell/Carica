@@ -40,32 +40,4 @@ readonly class DeriveActionMetadataMiddleware implements MiddlewareInterface
 
         return $handler->handle($request);
     }
-
-//    /**
-//     * @param \ReflectionParameter[] $rParams
-//     */
-//    private function deriveParsedBodyParam(\Closure $action, array $rParams): string
-//    {
-//        $getAttribute = static fn (\ReflectionParameter $rParam)
-//            => ($rParam->getAttributes(ParsedBody::class, \ReflectionAttribute::IS_INSTANCEOF)[0] ?? null) !== null;
-//
-//        /** @var ?\ReflectionParameter $rBodyParam */
-//        $rBodyParam = array_find($rParams, $getAttribute);
-//
-//        return $rBodyParam?->getName() ?? '';
-//    }
-//
-//    /**
-//     * @param \ReflectionParameter[] $rParams
-//     * @return array<string, string>
-//     */
-//    private function deriveParameters(\Closure $action, array $rParams): array
-//    {
-//        // @todo Better handle union types, which I doubt are supportable.
-//        return array_combine(
-//            amap(method('getName'))($rParams),
-//            // @phpstan-ignore method.notFound (We're assuming only named types here, so getName() is available.)
-//            amap(fn(\ReflectionParameter $r): string => $r->getType()?->getName() ?? 'mixed')($rParams),
-//        );
-//    }
 }

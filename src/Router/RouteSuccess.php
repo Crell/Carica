@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Crell\HttpTools\Router;
 
 use Crell\HttpTools\ActionMetadata;
+use Crell\HttpTools\Middleware\DeriveActionMetadataMiddleware;
 
 readonly class RouteSuccess implements RouteResult
 {
@@ -12,6 +13,12 @@ readonly class RouteSuccess implements RouteResult
      * @param array<string, mixed> $arguments
      *   The placeholder arguments extracted from the route path.  The key
      *   is the placeholder name. The value is the extracted value.
+     * @param ?ActionMetadata $actionDef
+     *   The metadata about the action that will be used by routing.
+     *   If null, it is expected that it will be filled in by a later
+     *   process.
+     *
+     * @see DeriveActionMetadataMiddleware
      */
     public function __construct(
         public \Closure $action,
@@ -39,27 +46,4 @@ readonly class RouteSuccess implements RouteResult
             actionDef: $this->actionDef,
         );
     }
-
-//    public function withParsedBodyParameter(string $paramName): self
-//    {
-//        return new self(
-//            action: $this->action,
-//            arguments: $this->arguments,
-//            parameters: $this->parameters,
-//            parsedBodyParameter: $paramName,
-//        );
-//    }
-//
-//    /**
-//     * @param array<string, string> $params
-//     */
-//    public function withParams(array $params): self
-//    {
-//        return new self(
-//            action: $this->action,
-//            arguments: $this->arguments,
-//            parameters: $params + ($this->parameters ?? []),
-//            parsedBodyParameter: $this->parsedBodyParameter,
-//        );
-//    }
 }

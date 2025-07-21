@@ -33,13 +33,13 @@ readonly class ActionDispatcher implements RequestHandlerInterface
 
         // Passing the request itself has to happen last, in case
         // previous middleware layers modified it.
-        if ($routeResult->actionDef->requestParameter) {
+        if ($routeResult->actionDef?->requestParameter) {
             $available[$routeResult->actionDef->requestParameter] = $request;
         }
 
         // If there is a parsed body, and an instruction of where to put it,
         // pass that in, too.
-        if ($bodyParam = $routeResult->actionDef->parsedBodyParameter) {
+        if ($bodyParam = $routeResult->actionDef?->parsedBodyParameter) {
             $available[$bodyParam] = $request->getParsedBody();
         }
 

@@ -39,9 +39,9 @@ class ParsedBodyMiddleware implements MiddlewareInterface
 
         // We're doing a weak truthy check here, so that both null and '' values
         // result in not doing anything.
-        if ($result instanceof RouteSuccess && $result->actionDef?->parsedBodyParameter && $result->actionDef->parameterTypes !== null) {
+        if ($result instanceof RouteSuccess && $result->actionDef?->parsedBodyParameter) {
             /** @var class-string $bodyType */
-            $bodyType = $result->actionDef->parameterTypes[$result->actionDef?->parsedBodyParameter];
+            $bodyType = $result->actionDef->parameterTypes[$result->actionDef->parsedBodyParameter];
             $contentType = $request->getHeaderLine('content-type');
 
             $parsed = $this
