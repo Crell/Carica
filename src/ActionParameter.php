@@ -14,10 +14,6 @@ class ActionParameter implements FromReflectionParameter
 
     protected(set) TypeDef $typeDef;
 
-    public function __construct(
-        protected(set) ?string $name = null,
-    ) {}
-
     public function fromReflection(\ReflectionParameter $subject): void
     {
         $this->phpName = $subject->getName();
