@@ -29,7 +29,7 @@ class NormalizeArgumentTypesMiddleware implements MiddlewareInterface
         if ($result instanceof RouteSuccess && $result->actionDef?->parameterTypes !== null) {
             $newArgs = [];
             foreach (array_intersect_key($result->arguments, $result->actionDef->parameterTypes) as $name => $val) {
-                $normalizedValue = $this->normalizeValue($name, $val, $result->actionDef->parameterTypes[$name]);
+                $normalizedValue = $this->normalizeValue($val, $result->actionDef->parameterTypes[$name]);
                 if ($normalizedValue instanceof CannotNormalizeValue) {
                     // @todo Make this pluggable?
                     return $this->responseBuilder->badRequest(sprintf('The %s parameter expects a %s. %s provided.', $name, $result->actionDef->parameterTypes[$name], get_debug_type($val)));
@@ -43,7 +43,7 @@ class NormalizeArgumentTypesMiddleware implements MiddlewareInterface
         return $handler->handle($request);
     }
 
-    private function normalizeValue(string $name, mixed $value, string $type): mixed
+    private function normalizeValue(mixed $value, string $type): mixed
     {
         if ($type === 'string') {
             return (string)$value;
@@ -64,7 +64,14 @@ class NormalizeArgumentTypesMiddleware implements MiddlewareInterface
 
         // Allow various standard boolean-esque terms to fold to boolean.
         if ($type === 'bool') {
-            return (in_array(strtolower($value), [1, '1', 'true', 'yes', 'on'], false));
+            if (is_string($value)) {
+                $value = strtolower($value);
+            }
+            return match ($value) {
+                1, '1', 'true', 'yes', 'on' => true,
+                0, '0', 'false', 'no', 'off' => false,
+                default => new CannotNormalizeValue(),
+            };
         }
 
         // @todo Put mechanism for handling upcasters here.

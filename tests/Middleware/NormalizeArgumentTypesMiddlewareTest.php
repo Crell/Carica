@@ -56,20 +56,49 @@ class NormalizeArgumentTypesMiddlewareTest extends TestCase
             'expectedValue' => 3.14,
         ];
         yield 'string to object (ignored)' => [
-            'type' => NormalizeArgumentTypesMiddleware::class, // Doesn't matter, just need a class name.
+            'type' => 'AClassName',
             'value' => 'hello',
             'expectedValue' => 'hello',
         ];
         yield 'int to object (ignored)' => [
-            'type' => NormalizeArgumentTypesMiddleware::class, // Doesn't matter, just need a class name.
+            'type' => 'AClassName',
             'value' => 5,
             'expectedValue' => 5,
         ];
+
+        foreach ([1, '1', 'true', 'yes', 'on'] as $val) {
+            yield sprintf('%s "%s" to bool', get_debug_type($val), $val) => [
+                'type' => 'bool',
+                'value' => $val,
+                'expectedValue' => true,
+            ];
+        }
+
+        foreach ([0, '0', 'false', 'no', 'off'] as $val) {
+            yield sprintf('%s "%s" to bool', get_debug_type($val), $val) => [
+                'type' => 'bool',
+                'value' => $val,
+                'expectedValue' => false,
+            ];
+        }
+
+        foreach ([2, '2', 'nyet', 'agreed'] as $val) {
+            yield sprintf('%s "%s" to bool', get_debug_type($val), $val) => [
+                'type' => 'bool',
+                'value' => $val,
+                'expectedResponseCode' => 400,
+            ];
+        }
     }
 
     #[Test, DataProvider('typeMappingExamples')]
     #[TestDox('We can normalize from $_dataName')]
-    public function typeMapping(string $type, mixed $value, mixed $expectedValue): void
+    public function typeMapping(
+        string $type,
+        mixed $value,
+        mixed $expectedValue = null,
+        mixed $expectedResponseCode = null,
+    ): void
     {
         $psr17Factory = new Psr17Factory();
         $responseBuilder = new ResponseBuilder($psr17Factory, $psr17Factory);
@@ -88,10 +117,16 @@ class NormalizeArgumentTypesMiddlewareTest extends TestCase
         $fakeNext = new FakeNext();
         $response = $middleware->process($request, $fakeNext);
 
-        self::assertNotNull($fakeNext->request);
-        /** @var RouteSuccess $updatedResult */
-        $updatedResult = $fakeNext->request->getAttribute(RouteResult::class);
+        if ($expectedValue !== null) {
+            self::assertNotNull($fakeNext->request);
+            /** @var RouteSuccess $updatedResult */
+            $updatedResult = $fakeNext->request->getAttribute(RouteResult::class);
 
-        self::assertSame(['a' => $expectedValue], $updatedResult->arguments);
+            self::assertSame(['a' => $expectedValue], $updatedResult->arguments);
+        }
+
+        if ($expectedResponseCode) {
+            self::assertEquals($expectedResponseCode, $response->getStatusCode());
+        }
     }
 }
