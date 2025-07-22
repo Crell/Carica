@@ -37,4 +37,11 @@ interface ActionMetadata
      * @var array<string, string>
      */
     public array $requestAttributes { get; }
+
+    /**
+     * A list of additional middleware that should be called on this action.
+     *
+     * @var array<string|class-string>
+     */
+    public array $additionalMiddleware { get; }
 }

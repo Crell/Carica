@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Crell\HttpTools;
 
+use Crell\HttpTools\Middleware\AdditionalMiddlewareMiddleware;
 use Crell\HttpTools\Middleware\CacheHeaderMiddleware;
 use Crell\HttpTools\Middleware\DefaultContentTypeMiddleware;
 use Crell\HttpTools\Middleware\DeriveActionMetadataMiddleware;
@@ -128,7 +129,8 @@ class IntegrationTest extends TestCase
             new NormalizeArgumentTypesMiddleware($responseBuilder),
             new ParsedBodyMiddleware($responseBuilder, [
                 new SerdeBodyParser(new SerdeCommon()),
-            ])
+            ]),
+            new AdditionalMiddlewareMiddleware(),
         ]);
 
         $response = $stack->handle($request);
