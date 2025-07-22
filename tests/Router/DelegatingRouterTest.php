@@ -41,13 +41,13 @@ class DelegatingRouterTest extends TestCase
 
     public static function pathRouterExamples(): \Generator
     {
-        yield ['method' => 'GET', 'url' => '/foo', 'router1'];
-        yield ['method' => 'POST', 'url' => '/foo', 'router1'];
-        yield ['method' => 'POST', 'url' => '/foo/bar', 'router1'];
-        yield ['method' => 'POST', 'url' => '/foo/bar.php', 'router1'];
-        yield ['method' => 'GET', 'url' => '/', 'default'];
-        yield ['method' => 'GET', 'url' => '/baz', 'default'];
-        yield ['method' => 'GET', 'url' => '/foobar', 'default'];
+        yield ['method' => 'GET', 'url' => '/foo', 'expected' => 'router1'];
+        yield ['method' => 'POST', 'url' => '/foo', 'expected' => 'router1'];
+        yield ['method' => 'POST', 'url' => '/foo/bar', 'expected' => 'router1'];
+        yield ['method' => 'POST', 'url' => '/foo/bar.php', 'expected' => 'router1'];
+        yield ['method' => 'GET', 'url' => '/', 'expected' => 'default'];
+        yield ['method' => 'GET', 'url' => '/baz', 'expected' => 'default'];
+        yield ['method' => 'GET', 'url' => '/foobar', 'expected' => 'default'];
     }
 
     #[Test, TestDox('A delegated router handles the correct routes')]

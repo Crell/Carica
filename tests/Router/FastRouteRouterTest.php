@@ -39,16 +39,12 @@ class FastRouteRouterTest extends TestCase
     #[Test, DataProvider('routeExamples')]
     public function routeResults(
         string $route,
+        \Closure $handler,
+        ServerRequestInterface $request,
+        RouteResult $expectedResult,
         string $method = 'GET',
-        ?\Closure $handler = null,
-        ?ServerRequestInterface $request = null,
-        ?RouteResult $expectedResult = null,
     ): void
     {
-        self::assertNotNull($handler);
-        self::assertNotNull($request);
-        self::assertNotNull($expectedResult);
-
         $routeCollector = new RouteCollector(new Std(), new GroupGenerator());
 
         $routeCollector->addRoute($method, $route, $handler);
@@ -59,6 +55,12 @@ class FastRouteRouterTest extends TestCase
 
         $result = $router->route($request);
 
-        self::assertEquals($expectedResult, $result);
+        self::assertEquals($expectedResult::class, $result::class);
+        if ($expectedResult instanceof RouteSuccess) {
+            self::assertInstanceOf(RouteSuccess::class, $result);
+            self::assertEquals(($expectedResult->action)(), ($result->action)());
+            self::assertEquals($expectedResult->arguments, $result->arguments);
+            self::assertEquals($expectedResult->actionDef, $result->actionDef);
+        }
     }
 }
