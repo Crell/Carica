@@ -29,4 +29,15 @@ interface ActionMetadata
      * null to indicate no parameter wants the request object.
      */
     public ?string $requestParameter { get; }
+
+
+    /**
+     * A map of parameters that should receive a request attribute.
+     *
+     * The key is the parameter name, the value is the request attribute it should be given.
+     *
+     * @var array<string, string>
+     */
+    public array $requestAttributes { get; }
+
 }

@@ -7,6 +7,10 @@ namespace Crell\HttpTools;
 use Crell\AttributeUtils\ParseParameters;
 use Psr\Http\Message\ServerRequestInterface;
 
+use function Crell\fp\afilter;
+use function Crell\fp\amapWithKeys;
+use function Crell\fp\pipe;
+
 #[\Attribute(\Attribute::TARGET_FUNCTION | \Attribute::TARGET_METHOD)]
 class ActionMetadataAttribute implements ActionMetadata, ParseParameters
 {
@@ -17,6 +21,11 @@ class ActionMetadataAttribute implements ActionMetadata, ParseParameters
 
     public private(set) ?string $parsedBodyParameter;
     public private(set) ?string $requestParameter;
+
+    /**
+     * @var array<string, string>
+     */
+    public private(set) array $requestAttributes = [];
 
     /**
      * @param array<string, ActionParameter> $parameters
@@ -32,8 +41,13 @@ class ActionMetadataAttribute implements ActionMetadata, ParseParameters
             $this->parameterTypes[$name] = $p->typeDef->getSimpleType();
         }
         $this->parsedBodyParameter = array_find_key($parameters, static fn(ActionParameter $p) => $p instanceof ParsedBody);
-
         $this->requestParameter = array_find_key($this->parameterTypes ?? [], static fn(?string $name, string $type) => is_a($type, ServerRequestInterface::class, true));
+
+        $this->requestAttributes = pipe(
+            $parameters,
+            afilter(static fn(ActionParameter $p) => $p instanceof RequestAttribute),
+            amapWithKeys(static fn(RequestAttribute $param, string $name) => $param->name ?? $name),
+        );
     }
 
     public function includeParametersByDefault(): bool

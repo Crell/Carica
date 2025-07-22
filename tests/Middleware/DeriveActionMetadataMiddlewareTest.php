@@ -6,6 +6,7 @@ namespace Crell\HttpTools\Middleware;
 
 use Crell\HttpTools\ParsedBody;
 use Crell\HttpTools\Point;
+use Crell\HttpTools\RequestAttribute;
 use Crell\HttpTools\Router\FakeNext;
 use Crell\HttpTools\Router\RouteResult;
 use Crell\HttpTools\Router\RouteSuccess;
@@ -23,7 +24,7 @@ class DeriveActionMetadataMiddlewareTest extends TestCase
             'uri' => '/foo/bar',
             'routeResult' => new RouteSuccess(fn(string $a, int $b) => $a . $b),
             'expectedParameters' => ['a' => 'string', 'b' => 'int'],
-            'expectedBodyParameter' => '',
+            'expectedBodyParameter' => null,
         ];
 
         yield 'derive body parameter' => [
@@ -39,23 +40,40 @@ class DeriveActionMetadataMiddlewareTest extends TestCase
             'expectedParameters' => ['point' => Point::class, 'name' => 'string'],
             'expectedBodyParameter' => 'point',
         ];
+
+        yield 'derive request attribute parameters' => [
+            'uri' => '/foo/bar',
+            'routeResult' => new RouteSuccess(fn(#[RequestAttribute] string $dummy, string $name) => $dummy),
+            'expectedParameters' => ['dummy' => 'string', 'name' => 'string'],
+            'expectedRequestAttributes' => ['dummy' => 'dummy'],
+        ];
+
+        yield 'derive request attribute parameter with name override' => [
+            'uri' => '/foo/bar',
+            'routeResult' => new RouteSuccess(fn(#[RequestAttribute('dummy')] string $alternate, string $name) => $alternate),
+            'expectedParameters' => ['alternate' => 'string', 'name' => 'string'],
+            'expectedRequestAttributes' => ['alternate' => 'dummy'],
+        ];
     }
 
     /**
      * @param array<string, string> $expectedParameters
+     * @param array<string, string> $expectedRequestAttributes
      */
     #[Test, DataProvider('deriveMetadataExamples')]
     public function deriveMetadata(
         string $uri,
         RouteResult $routeResult,
-        array $expectedParameters,
-        string $expectedBodyParameter,
+        array $expectedParameters = [],
+        ?string $expectedBodyParameter = null,
+        array $expectedRequestAttributes = [],
     ): void
     {
         $middleware = new DeriveActionMetadataMiddleware();
 
         $request = new ServerRequest('GET', $uri)
             ->withAttribute(RouteResult::class, $routeResult)
+            ->withAttribute('dummy', 'value')
         ;
 
         $fakeNext = new FakeNext();
@@ -67,5 +85,6 @@ class DeriveActionMetadataMiddlewareTest extends TestCase
 
         self::assertEquals($expectedParameters, $updatedResult->actionDef?->parameterTypes);
         self::assertEquals($expectedBodyParameter, $updatedResult->actionDef?->parsedBodyParameter);
+        self::assertEquals($expectedRequestAttributes, $updatedResult->actionDef?->requestAttributes);
     }
 }

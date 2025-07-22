@@ -27,24 +27,30 @@ readonly class ActionDispatcher implements RequestHandlerInterface
     {
         /** @var RouteSuccess $routeResult */
         $routeResult = $request->getAttribute(RouteResult::class) ?? throw new RouteResultNotProvided();
+        $actionDef = $routeResult->actionDef;
 
-        $definedParams = $routeResult->actionDef->parameterTypes ?? [];
         $available = $routeResult->arguments;
 
-        // Passing the request itself has to happen last, in case
-        // previous middleware layers modified it.
-        if ($routeResult->actionDef?->requestParameter) {
-            $available[$routeResult->actionDef->requestParameter] = $request;
-        }
+        if ($actionDef) {
+            // Passing the request itself has to happen last, in case
+            // previous middleware layers modified it.
+            if ($actionDef->requestParameter) {
+                $available[$actionDef->requestParameter] = $request;
+            }
 
-        // If there is a parsed body, and an instruction of where to put it,
-        // pass that in, too.
-        if ($bodyParam = $routeResult->actionDef?->parsedBodyParameter) {
-            $available[$bodyParam] = $request->getParsedBody();
+            // If there is a parsed body, and an instruction of where to put it,
+            // pass that in, too.
+            if ($bodyParam = $actionDef->parsedBodyParameter) {
+                $available[$bodyParam] = $request->getParsedBody();
+            }
+
+            foreach ($actionDef->requestAttributes as $name => $target) {
+                $available[$name] = $request->getAttribute($target);
+            }
         }
 
         // Call the action.
-        $args = array_intersect_key($available, $definedParams);
+        $args = array_intersect_key($available, $actionDef->parameterTypes ?? []);
         $result = ($routeResult->action)(...$args);
 
         if ($result instanceof ResponseInterface) {
