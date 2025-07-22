@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Crell\HttpTools\Middleware;
 
 use Crell\HttpTools\ExplicitActionMetadata;
+use Crell\HttpTools\HasX;
+use Crell\HttpTools\ParameterLoader;
+use Crell\HttpTools\Point;
 use Crell\HttpTools\ResponseBuilder;
 use Crell\HttpTools\Router\FakeNext;
 use Crell\HttpTools\Router\RouteResult;
@@ -18,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 
 class NormalizeArgumentTypesMiddlewareTest extends TestCase
 {
-    public static function typeMappingExamples(): \Generator
+    public static function scalarMappingExamples(): \Generator
     {
         yield 'int to int' => [
             'type' => 'int',
@@ -55,6 +58,34 @@ class NormalizeArgumentTypesMiddlewareTest extends TestCase
             'value' => '3.14',
             'expectedValue' => 3.14,
         ];
+
+        // Booleans
+        foreach ([1, '1', 'true', 'yes', 'on'] as $val) {
+            yield sprintf('%s "%s" to bool', get_debug_type($val), $val) => [
+                'type' => 'bool',
+                'value' => $val,
+                'expectedValue' => true,
+            ];
+        }
+        foreach ([0, '0', 'false', 'no', 'off'] as $val) {
+            yield sprintf('%s "%s" to bool', get_debug_type($val), $val) => [
+                'type' => 'bool',
+                'value' => $val,
+                'expectedValue' => false,
+            ];
+        }
+        foreach ([2, '2', 'nyet', 'agreed'] as $val) {
+            yield sprintf('%s "%s" to bool', get_debug_type($val), $val) => [
+                'type' => 'bool',
+                'value' => $val,
+                'expectedResponseCode' => 400,
+            ];
+        }
+
+    }
+
+    public static function objectMappingExamples(): \Generator
+    {
         yield 'string to object (ignored)' => [
             'type' => 'AClassName',
             'value' => 'hello',
@@ -66,36 +97,61 @@ class NormalizeArgumentTypesMiddlewareTest extends TestCase
             'expectedValue' => 5,
         ];
 
-        foreach ([1, '1', 'true', 'yes', 'on'] as $val) {
-            yield sprintf('%s "%s" to bool', get_debug_type($val), $val) => [
-                'type' => 'bool',
-                'value' => $val,
-                'expectedValue' => true,
-            ];
-        }
+        $pointLoader = new class implements ParameterLoader
+        {
+            public function load(float|int|string $value, string $type): ?object
+            {
+                if (is_int($value)) {
+                    return new Point($value, 0);
+                }
+                return null;
+            }
+        };
+        $nonLoader = new class implements ParameterLoader
+        {
+            public function load(float|int|string $value, string $type): ?object
+            {
+                return null;
+            }
+        };
 
-        foreach ([0, '0', 'false', 'no', 'off'] as $val) {
-            yield sprintf('%s "%s" to bool', get_debug_type($val), $val) => [
-                'type' => 'bool',
-                'value' => $val,
-                'expectedValue' => false,
-            ];
-        }
+        yield 'int to object (loaded)' => [
+            'type' => Point::class,
+            'value' => 5,
+            'loaders' => [Point::class => $pointLoader],
+            'expectedValue' => new Point(5, 0),
+        ];
+        yield 'int to interface (loaded)' => [
+            'type' => HasX::class,
+            'value' => 5,
+            'loaders' => [Point::class => $pointLoader],
+            'expectedValue' => new Point(5, 0),
+        ];
+        yield 'int to interface with no-op loader' => [
+            'type' => HasX::class,
+            'value' => 5,
+            'loaders' => [HasX::class => $nonLoader, Point::class => $pointLoader],
+            'expectedValue' => new Point(5, 0),
+        ];
 
-        foreach ([2, '2', 'nyet', 'agreed'] as $val) {
-            yield sprintf('%s "%s" to bool', get_debug_type($val), $val) => [
-                'type' => 'bool',
-                'value' => $val,
-                'expectedResponseCode' => 400,
-            ];
-        }
+        yield 'int to interface with no applicable loader' => [
+            'type' => HasX::class,
+            'value' => 5,
+            'loaders' => [HasX::class => $nonLoader],
+            'expectedResponseCode' => 400,
+        ];
     }
 
-    #[Test, DataProvider('typeMappingExamples')]
-    #[TestDox('We can normalize from $_dataName')]
+    /**
+     * @param array<class-string, ParameterLoader> $loaders
+     */
+    #[Test, TestDox('We can normalize from $_dataName')]
+    #[DataProvider('scalarMappingExamples')]
+    #[DataProvider('objectMappingExamples')]
     public function typeMapping(
         string $type,
         mixed $value,
+        array $loaders = [],
         mixed $expectedValue = null,
         mixed $expectedResponseCode = null,
     ): void
@@ -103,7 +159,7 @@ class NormalizeArgumentTypesMiddlewareTest extends TestCase
         $psr17Factory = new Psr17Factory();
         $responseBuilder = new ResponseBuilder($psr17Factory, $psr17Factory);
 
-        $middleware = new NormalizeArgumentTypesMiddleware($responseBuilder);
+        $middleware = new NormalizeArgumentTypesMiddleware($responseBuilder, $loaders);
 
         $result = new RouteSuccess(
             action: fn(string $a) => $a,
@@ -122,7 +178,7 @@ class NormalizeArgumentTypesMiddlewareTest extends TestCase
             /** @var RouteSuccess $updatedResult */
             $updatedResult = $fakeNext->request->getAttribute(RouteResult::class);
 
-            self::assertSame(['a' => $expectedValue], $updatedResult->arguments);
+            self::assertEquals(['a' => $expectedValue], $updatedResult->arguments);
         }
 
         if ($expectedResponseCode) {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Crell\HttpTools\Middleware;
 
+use Crell\HttpTools\ParameterLoader;
 use Crell\HttpTools\ResponseBuilder;
 use Crell\HttpTools\Router\RouteResult;
 use Crell\HttpTools\Router\RouteSuccess;
@@ -19,9 +20,23 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class NormalizeArgumentTypesMiddleware implements MiddlewareInterface
 {
+    /**
+     * @param array<class-string, ParameterLoader> $loaders
+     */
     public function __construct(
         private readonly ResponseBuilder $responseBuilder,
+        protected array $loaders = [],
     ) {}
+
+    /**
+     * @phpstan-param class-string $class
+     * @return $this
+     */
+    public function addLoader(string $class, ParameterLoader $loader): self
+    {
+        $this->loaders[$class] = $loader;
+        return $this;
+    }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -74,7 +89,17 @@ class NormalizeArgumentTypesMiddleware implements MiddlewareInterface
             };
         }
 
-        // @todo Put mechanism for handling upcasters here.
+        if (class_exists($type) || interface_exists($type)) {
+            foreach ($this->loaders as $class => $loader) {
+                if (is_a($class, $type, true)) {
+                    $loaded = $loader->load($value, $type);
+                    if ($loaded !== null) {
+                        return $loaded;
+                    }
+                }
+            }
+            return new CannotNormalizeValue();
+        }
 
         return $value;
     }
