@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Crell\HttpTools\Router;
 
-use Crell\HttpTools\ActionMetadata;
-use Crell\HttpTools\ActionMetadataAttribute;
 use Crell\HttpTools\ExplicitActionMetadata;
 use Nyholm\Psr7\Response;
 use Nyholm\Psr7\ServerRequest;

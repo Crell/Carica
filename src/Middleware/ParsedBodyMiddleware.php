@@ -6,8 +6,6 @@ namespace Crell\HttpTools\Middleware;
 
 use Crell\HttpTools\BodyParser;
 use Crell\HttpTools\BodyParserError;
-use Crell\HttpTools\HttpStatus;
-use Crell\HttpTools\ParsedBody;
 use Crell\HttpTools\ResponseBuilder;
 use Crell\HttpTools\Router\RouteResult;
 use Crell\HttpTools\Router\RouteResultNotProvided;

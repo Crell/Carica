@@ -8,16 +8,12 @@ use Crell\AttributeUtils\FuncAnalyzer;
 use Crell\AttributeUtils\FunctionAnalyzer;
 use Crell\AttributeUtils\MemoryCacheFunctionAnalyzer;
 use Crell\HttpTools\ActionMetadataAttribute;
-use Crell\HttpTools\ParsedBody;
 use Crell\HttpTools\Router\RouteResult;
 use Crell\HttpTools\Router\RouteSuccess;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-
-use function Crell\fp\amap;
-use function Crell\fp\method;
 
 /**
  * If the RouteResult does not already have the action metadata, derive them.
