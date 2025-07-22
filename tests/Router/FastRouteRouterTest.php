@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Crell\HttpTools\Router;
 
+use Crell\HttpTools\ExplicitActionMetadata;
 use FastRoute\DataGenerator\GroupCountBased as GroupGenerator;
 use FastRoute\Dispatcher\GroupCountBased as GroupDispatcher;
 use FastRoute\RouteCollector;
@@ -34,12 +35,36 @@ class FastRouteRouterTest extends TestCase
             'request' => new ServerRequest('GET', '/foo/beep/baz'),
             'expectedResult' => new RouteSuccess(static fn() => 'ahandler', ['bar' => 'beep']),
         ];
+
+        yield 'route def, placeholder route' => [
+            'route' => '/foo/{name}/baz',
+            'method' => 'GET',
+            'handler' => new RouteDefinition([FakeActions::class, 'stringParam'], new ExplicitActionMetadata(['name' => 'string'])),
+            'request' => new ServerRequest('GET', '/foo/beep/baz'),
+            'expectedResult' => new RouteSuccess(new FakeActions()->stringParam(...), ['name' => 'beep']),
+        ];
+
+        yield 'invokable route def, placeholder route' => [
+            'route' => '/foo/{name}/baz',
+            'method' => 'GET',
+            'handler' => new RouteDefinition(FakeInvokableAction::class, new ExplicitActionMetadata(['key' => 'string'])),
+            'request' => new ServerRequest('GET', '/foo/beep/baz'),
+            'expectedResult' => new RouteSuccess(new FakeActions()->stringParam(...), ['name' => 'beep']),
+        ];
+
+        yield 'invokable route def, placeholder route, extra args' => [
+            'route' => '/foo/{name}/baz',
+            'method' => 'GET',
+            'handler' => new RouteDefinition(FakeInvokableAction::class, new ExplicitActionMetadata(['key' => 'string']), ['extra' => 'value']),
+            'request' => new ServerRequest('GET', '/foo/beep/baz'),
+            'expectedResult' => new RouteSuccess(new FakeActions()->stringParam(...), ['extra' => 'value', 'name' => 'beep']),
+        ];
     }
 
     #[Test, DataProvider('routeExamples')]
     public function routeResults(
         string $route,
-        \Closure $handler,
+        \Closure|RouteDefinition $handler,
         ServerRequestInterface $request,
         RouteResult $expectedResult,
         string $method = 'GET',
@@ -58,9 +83,33 @@ class FastRouteRouterTest extends TestCase
         self::assertEquals($expectedResult::class, $result::class);
         if ($expectedResult instanceof RouteSuccess) {
             self::assertInstanceOf(RouteSuccess::class, $result);
-            self::assertEquals(($expectedResult->action)(), ($result->action)());
             self::assertEquals($expectedResult->arguments, $result->arguments);
-            self::assertEquals($expectedResult->actionDef, $result->actionDef);
+            if ($handler instanceof RouteDefinition) {
+                self::assertEquals($handler->actionDef, $result->actionDef);
+            } else {
+                self::assertEquals($expectedResult->actionDef, $result->actionDef);
+            }
         }
+    }
+}
+
+class FakeActions
+{
+    public function noParams(): string
+    {
+        return __FUNCTION__;
+    }
+
+    public function stringParam(string $name): string
+    {
+        return $name;
+    }
+}
+
+class FakeInvokableAction
+{
+    public function __invoke(string $key): string
+    {
+        return $key;
     }
 }
