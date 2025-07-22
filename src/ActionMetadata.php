@@ -22,14 +22,12 @@ interface ActionMetadata
      */
     public? string $parsedBodyParameter { get; }
 
-
     /**
      * The name of the parameter that should receive the request object.
      *
      * null to indicate no parameter wants the request object.
      */
     public ?string $requestParameter { get; }
-
 
     /**
      * A map of parameters that should receive a request attribute.
@@ -39,5 +37,4 @@ interface ActionMetadata
      * @var array<string, string>
      */
     public array $requestAttributes { get; }
-
 }
