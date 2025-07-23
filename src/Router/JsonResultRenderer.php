@@ -22,11 +22,11 @@ readonly class JsonResultRenderer implements ActionResultRenderer
     public function renderResponse(ServerRequestInterface $request, mixed $result): ResponseInterface
     {
         $body = match (true) {
-            is_scalar($result) => $result,
-            is_array($result) => json_encode($result, JSON_THROW_ON_ERROR),
+            is_scalar($result) => (string)$result,
             is_object($result) && $this->serde !== null => $this->serde->serialize($result, 'json'),
-            is_object($result) => json_encode($result, JSON_THROW_ON_ERROR),
-            default => throw new \LogicException('Unsupported result type: ' . get_debug_type($result)),
+            is_array($result), is_object($result) => json_encode($result, JSON_THROW_ON_ERROR),
+            // Ignoring for code coverage, because there's no way to actually get here, but PHPStan insists we have it.
+            default => throw new \LogicException('Unsupported result type: ' . get_debug_type($result)), // @codeCoverageIgnore
         };
 
         return $this->responseBuilder

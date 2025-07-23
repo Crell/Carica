@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Crell\HttpTools\Middleware;
 
 use Crell\HttpTools\ExplicitActionMetadata;
+use Crell\HttpTools\Fakes\FakeContainer;
 use Crell\HttpTools\Fakes\TracingMiddleware;
-use Crell\HttpTools\ParsedBody;
-use Crell\HttpTools\Point;
-use Crell\HttpTools\RequestAttribute;
 use Crell\HttpTools\Router\FakeNext;
 use Crell\HttpTools\Router\RouteResult;
 use Crell\HttpTools\Router\RouteSuccess;
@@ -16,6 +14,7 @@ use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 
 class AdditionalMiddlewareTest extends TestCase
 {
@@ -36,15 +35,25 @@ class AdditionalMiddlewareTest extends TestCase
                 actionDef: new ExplicitActionMetadata(additionalMiddleware: [TracingMiddleware::class])
             ),
         ];
+
+        yield 'Extra from container' => [
+            'uri' => '/foo/bar',
+            'routeResult' => new RouteSuccess(
+                action: fn(string $a, int $b) => $a . $b,
+                actionDef: new ExplicitActionMetadata(additionalMiddleware: [TracingMiddleware::class])
+            ),
+            'container' => new FakeContainer([TracingMiddleware::class => new TracingMiddleware()]),
+        ];
     }
 
     #[Test, DataProvider('middlewareExamples')]
     public function additionalMiddleware(
         string $uri,
         RouteResult $routeResult,
+        ?ContainerInterface $container = null,
     ): void
     {
-        $middleware = new AdditionalMiddlewareMiddleware();
+        $middleware = new AdditionalMiddlewareMiddleware($container);
 
         $request = new ServerRequest('GET', $uri)
             ->withAttribute(RouteResult::class, $routeResult)

@@ -43,6 +43,15 @@ class IntegrationTest extends TestCase
             },
         ];
 
+        yield 'Successful array response, HEAD' => [
+            'request' => new ServerRequest('HEAD', '/foo/bar'),
+            'routeResult' => new RouteSuccess(fn() => ['hello' => 'world']),
+            'expectedStatus' => 200,
+            'tests' => function (ResponseInterface $response, string $body) {
+                self::assertEmpty($body);
+            },
+        ];
+
         yield 'String query passed' => [
             'request' => new ServerRequest('GET', '/foo/bar?baz=world'),
             'routeResult' => new RouteSuccess(fn(string $baz) => ['hello' => $baz]),

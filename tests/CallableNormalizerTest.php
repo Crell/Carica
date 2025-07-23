@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Crell\HttpTools;
 
+use Crell\HttpTools\Fakes\FakeContainer;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +30,7 @@ class CallableNormalizerTest extends TestCase
         yield 'service' => [
             'callable' => ServiceClass::class,
             'expected' => 'service',
-            'container' => new FakeContainer(),
+            'container' => new FakeContainer([ServiceClass::class => new ServiceClass()]),
         ];
     }
 
@@ -68,18 +69,5 @@ class ServiceClass
     public function __invoke(): string
     {
         return 'service';
-    }
-}
-
-class FakeContainer implements ContainerInterface
-{
-    public function get(string $id): ServiceClass
-    {
-        return new ServiceClass();
-    }
-
-    public function has(string $id): bool
-    {
-        return true;
     }
 }

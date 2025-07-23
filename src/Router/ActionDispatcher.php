@@ -13,8 +13,8 @@ use Psr\Log\LoggerInterface;
  * Calls the final action that is responsible for this request.
  *
  * If the action result is not a Response, it will delegate to
- * the $resultRenderer service if defined. If not defined,
- * a basic HTTP 500 will be returned.
+ * the $resultRenderer service if defined. If not defined, it will
+ * throw an exception that should turn into an HTTP 500 error.
  */
 readonly class ActionDispatcher implements RequestHandlerInterface
 {

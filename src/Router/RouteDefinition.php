@@ -8,6 +8,8 @@ use Crell\HttpTools\ActionMetadata;
 
 /**
  * A serializable definition of a route result, with the action definition pre-filled.
+ *
+ * @codeCoverageIgnore
  */
 readonly class RouteDefinition
 {

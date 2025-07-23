@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Crell\HttpTools\Router;
 
+use Crell\HttpTools\ActionMetadata;
 use Crell\HttpTools\ExplicitActionMetadata;
+use Crell\HttpTools\Point;
 use Nyholm\Psr7\Response;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,32 +21,39 @@ class ActionDispatcherTest extends TestCase
             'url' => '/foo',
             'action' => fn() => new Response(200, body: 'success'),
             'arguments' => [],
-            'parameterTypes' => [],
-            'parsedBodyParameter' => null,
-            'requestParameter' => null,
+            'meta' => new ExplicitActionMetadata([], null, null),
             'expectedResponseBody' => 'success',
             'expectedStatus' => 200,
+        ];
+
+        yield 'no renderer' => [
+            'url' => '/foo',
+            'action' => fn() => new Point(3, 5),
+            'arguments' => [],
+            'meta' => new ExplicitActionMetadata([], null, null),
+            'expectedException' => ActionResultNotRendered::class,
         ];
     }
 
     /**
      * @param array<string, mixed> $arguments
-     * @param array<string, string> $parameterTypes
+     * @phpstan-param class-string<\Throwable> $expectedException
      */
     #[Test, DataProvider('actionDispatcherExamples')]
     public function actionDispatcher(
         string $url,
         \Closure $action,
         array $arguments = [],
-        array $parameterTypes = [],
-        ?string $parsedBodyParameter = null,
-        ?string $requestParameter = null,
+        ?ActionMetadata $meta = null,
         string $expectedResponseBody = '',
         int $expectedStatus = 200,
+        ?string $expectedException = null,
     ): void {
-        $dispatcher = new ActionDispatcher();
+        if ($expectedException) {
+            $this->expectException($expectedException);
+        }
 
-        $meta = new ExplicitActionMetadata($parameterTypes, $parsedBodyParameter, $requestParameter);
+        $dispatcher = new ActionDispatcher();
 
         $routeResult = new RouteSuccess($action, $arguments, $meta);
 
