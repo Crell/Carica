@@ -11,25 +11,27 @@ use Crell\Serde\TypeMismatch;
 
 class SerdeBodyParser implements BodyParser
 {
+    private const array TypeMap = [
+        'application/json' => 'json',
+        'application/yaml' => 'yaml',
+        'application/toml' => 'toml',
+        'text/csv' => 'csv',
+        BodyParser::PhpArrayType => 'array',
+    ];
+
     public function __construct(
-        private Serde $serde,
+        private readonly Serde $serde,
     ) {}
 
     public function canParse(string $contentType, string $className): bool
     {
-        return class_exists($className) && in_array($contentType, ['application/json', 'application/yaml', 'application/toml', 'text/csv']);
+        return class_exists($className) && array_key_exists($contentType, self::TypeMap);
     }
 
-    public function parse(string $contentType, string $unparsed, string $className): object
+    public function parse(string $contentType, string|array $unparsed, string $className): object
     {
         try {
-            return match ($contentType) {
-                'application/json' => $this->serde->deserialize($unparsed, from: 'json', to: $className),
-                'application/yaml' => $this->serde->deserialize($unparsed, from: 'yaml', to: $className),
-                'application/toml' => $this->serde->deserialize($unparsed, from: 'toml', to: $className),
-                'text/csv' => $this->serde->deserialize($unparsed, from: 'csv', to: $className),
-                default => new BodyParserError(sprintf('Unhandleable content-type: %s', $contentType)),
-            };
+            return $this->serde->deserialize($unparsed, from: self::TypeMap[$contentType], to: $className);
         } catch (MissingRequiredValueWhenDeserializing $e) {
             // @todo Log with more details.
             return new BodyParserError(sprintf('The %s property is required.', $e->name));

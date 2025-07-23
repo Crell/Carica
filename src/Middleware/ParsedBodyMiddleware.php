@@ -38,13 +38,32 @@ class ParsedBodyMiddleware implements MiddlewareInterface
         // We're doing a weak truthy check here, so that both null and '' values
         // result in not doing anything.
         if ($result instanceof RouteSuccess && $result->actionDef?->parsedBodyParameter) {
-            /** @var class-string $bodyType */
+            /** @var class-string|'array' $bodyType */
             $bodyType = $result->actionDef->parameterTypes[$result->actionDef->parsedBodyParameter];
             $contentType = $request->getHeaderLine('content-type');
 
+            $previousParsedBody = $request->getParsedBody();
+            $contents = $request->getBody()->getContents();
+
+            if (is_object($previousParsedBody)) {
+                // It's already parsed, we do nothing.
+                return $handler->handle($request);
+            }
+
+            if ($bodyType === 'array') {
+                // It's already an array, we do nothing.
+                // If the parsed body isn't an array, this will error out later.
+                return $handler->handle($request);
+            }
+
+            if (is_array($previousParsedBody)) {
+                $contentType = BodyParser::PhpArrayType;
+                $contents = $previousParsedBody;
+            }
+
             $parsed = $this
                 ->getParser($contentType, $bodyType)
-                ?->parse($contentType, $request->getBody()->getContents(), $bodyType);
+                ?->parse($contentType, $contents, $bodyType);
 
             if ($parsed instanceof BodyParserError) {
                 return $this->responseBuilder->badRequest($parsed->message);
