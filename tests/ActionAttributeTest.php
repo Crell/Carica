@@ -6,6 +6,7 @@ namespace Crell\HttpTools;
 
 use Crell\AttributeUtils\Analyzer;
 use Crell\HttpTools\Fakes\ActionExamples;
+use Crell\HttpTools\Fakes\ActionUnionTypeExample;
 use Crell\HttpTools\Fakes\SecondMiddleware;
 use Crell\HttpTools\Fakes\TracingMiddleware;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -46,18 +47,30 @@ class ActionAttributeTest extends TestCase
                 self::assertEquals(['beep' => 'narf'], $def->requestAttributes);
             },
         ];
+        yield 'unions invalid' => [
+            'class' => ActionUnionTypeExample::class,
+            'method' => 'hasUnions',
+            'expectedException' => \InvalidArgumentException::class,
+
+        ];
     }
 
     /**
      * @phpstan-param class-string $class
+     * @phpstan-param class-string<\Throwable> $expectedException
      */
     #[Test]
     #[DataProvider('attributesExamples')]
     public function readAttributesFromClass(
         string $class,
         string $method,
-        \Closure $tests,
+        ?\Closure $tests = null,
+        ?string $expectedException = null,
     ): void {
+        if ($expectedException) {
+            $this->expectException($expectedException);
+        }
+
         $analyzer = new Analyzer();
 
         /** @var ActionClass $classDef */
@@ -65,6 +78,8 @@ class ActionAttributeTest extends TestCase
 
         $actionDef = $classDef->methods[$method];
 
-        $tests($actionDef);
+        if ($tests) {
+            $tests($actionDef);
+        }
     }
 }

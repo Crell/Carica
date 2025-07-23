@@ -59,12 +59,36 @@ class FastRouteRouterTest extends TestCase
             'request' => new ServerRequest('GET', '/foo/beep/baz'),
             'expectedResult' => new RouteSuccess(new FakeActions()->stringParam(...), ['extra' => 'value', 'name' => 'beep']),
         ];
+
+        yield 'not found' => [
+            'route' => '/foo',
+            'method' => 'GET',
+            'handler' => new RouteDefinition(FakeInvokableAction::class, new ExplicitActionMetadata()),
+            'request' => new ServerRequest('GET', '/missing'),
+            'expectedResult' => new RouteNotFound(),
+        ];
+
+        yield 'method not allowed' => [
+            'route' => '/foo',
+            'method' => 'POST',
+            'handler' => new RouteDefinition(FakeInvokableAction::class, new ExplicitActionMetadata()),
+            'request' => new ServerRequest('GET', '/foo'),
+            'expectedResult' => new RouteMethodNotAllowed(['POST']),
+        ];
+
+        yield 'Success already defined' => [
+            'route' => '/foo',
+            'method' => 'GET',
+            'handler' => new RouteSuccess(static fn() => 'ahandler'),
+            'request' => new ServerRequest('GET', '/foo'),
+            'expectedResult' => new RouteSuccess(static fn() => 'ahandler'),
+        ];
     }
 
     #[Test, DataProvider('routeExamples')]
     public function routeResults(
         string $route,
-        \Closure|RouteDefinition $handler,
+        \Closure|RouteDefinition|RouteSuccess $handler,
         ServerRequestInterface $request,
         RouteResult $expectedResult,
         string $method = 'GET',

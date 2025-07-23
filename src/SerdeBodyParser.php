@@ -32,6 +32,8 @@ class SerdeBodyParser implements BodyParser
     {
         try {
             return $this->serde->deserialize($unparsed, from: self::TypeMap[$contentType], to: $className);
+        // There's no need to manufacture these test cases right now.
+        // @codeCoverageIgnoreStart
         } catch (MissingRequiredValueWhenDeserializing $e) {
             // @todo Log with more details.
             return new BodyParserError(sprintf('The %s property is required.', $e->name));
@@ -42,5 +44,6 @@ class SerdeBodyParser implements BodyParser
             // @todo Log with more details.
             return new BodyParserError(sprintf('The %s property keys are invalid.', $e->field->serializedName));
         }
+        // @codeCoverageIgnoreEnd
     }
 }
