@@ -32,7 +32,10 @@
         "psr/log": "^3.0"
     },
     "suggest": {
-        "crell/serde": "A powerful serializer/deserializer that can make quick work of request bodies and action results."
+        "crell/serde": "A powerful serializer/deserializer that can make quick work of request bodies and action results.",
+        "nikic/fast-route": "A fast, cacheable routing implementation, compatible with Carica.",
+        "httpsoft/http-emitter": "A well-supported emitter for PSR-7 response objects.",
+        "nyholm/psr7": "The most widely used PSR-7/17 implementation, though you can use others if you wish."
     },
     "autoload": {
         "psr-4": {
