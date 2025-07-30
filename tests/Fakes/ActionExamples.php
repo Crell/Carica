@@ -8,7 +8,9 @@ use Crell\HttpTools\Middleware;
 use Crell\HttpTools\ParsedBody;
 use Crell\HttpTools\Point;
 use Crell\HttpTools\RequestAttribute;
+use Crell\HttpTools\File;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
 
 class ActionExamples
 {
@@ -25,7 +27,13 @@ class ActionExamples
         return __FUNCTION__;
     }
 
-    public function allParameterParts(#[ParsedBody] Point $point, ServerRequestInterface $request, string $fromUrl, #[RequestAttribute('narf')] string $beep): string
+    public function allParameterParts(
+        #[ParsedBody] Point $point,
+        ServerRequestInterface $request,
+        string $fromUrl,
+        #[RequestAttribute('narf')] string $beep,
+        #[File('myfile')] UploadedFileInterface $file,
+    ): string
     {
         return __FUNCTION__;
     }

@@ -13,6 +13,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
 
 class ActionAttributeTest extends TestCase
 {
@@ -41,10 +42,12 @@ class ActionAttributeTest extends TestCase
                     'request' => ServerRequestInterface::class,
                     'fromUrl' => 'string',
                     'beep' => 'string',
+                    'file' => UploadedFileInterface::class,
                 ], $def->parameterTypes);
                 self::assertEquals('point', $def->parsedBodyParameter);
                 self::assertEquals('request', $def->requestParameter);
                 self::assertEquals(['beep' => 'narf'], $def->requestAttributes);
+                self::assertEquals(['file' => ['myfile']], $def->uploadedFileParameters);
             },
         ];
         yield 'unions invalid' => [

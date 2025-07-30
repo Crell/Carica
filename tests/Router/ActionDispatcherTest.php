@@ -6,12 +6,15 @@ namespace Crell\HttpTools\Router;
 
 use Crell\HttpTools\ActionMetadata;
 use Crell\HttpTools\ExplicitActionMetadata;
+use Crell\HttpTools\File;
 use Crell\HttpTools\Point;
 use Nyholm\Psr7\Response;
 use Nyholm\Psr7\ServerRequest;
+use Nyholm\Psr7\UploadedFile;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\UploadedFileInterface;
 
 class ActionDispatcherTest extends TestCase
 {
@@ -26,6 +29,34 @@ class ActionDispatcherTest extends TestCase
             'expectedStatus' => 200,
         ];
 
+        // Nyholm/UploadFile requires a real file.
+        $dummyFileName = tempnam(directory: sys_get_temp_dir(), prefix: 'fake');
+        file_put_contents($dummyFileName, 'success file');
+
+        yield 'with one file' => [
+            'url' => '/foo',
+            'action' => fn(#[File] UploadedFileInterface $file) => new Response(200, body: $file->getStream()->getContents()),
+            'arguments' => [],
+            'meta' => new ExplicitActionMetadata(['file' => UploadedFileInterface::class], uploadedFileParameters: ['file' => ['file']]),
+            'expectedResponseBody' => 'success file',
+            'expectedStatus' => 200,
+            'files' => [
+                'file' => new UploadedFile($dummyFileName, 12, UPLOAD_ERR_OK),
+            ],
+        ];
+
+        yield 'with one nested file' => [
+            'url' => '/foo',
+            'action' => fn(#[File(['files', 'bar', 'baz'])] UploadedFileInterface $file) => new Response(200, body: $file->getStream()->getContents()),
+            'arguments' => [],
+            'meta' => new ExplicitActionMetadata(['file' => UploadedFileInterface::class], uploadedFileParameters: ['file' => ['files', 'bar', 'baz']]),
+            'expectedResponseBody' => 'success file',
+            'expectedStatus' => 200,
+            'files' => [
+                'files' => ['bar' => ['baz' => new UploadedFile($dummyFileName, 12, UPLOAD_ERR_OK)]],
+            ],
+        ];
+
         yield 'no renderer' => [
             'url' => '/foo',
             'action' => fn() => new Point(3, 5),
@@ -38,6 +69,7 @@ class ActionDispatcherTest extends TestCase
     /**
      * @param array<string, mixed> $arguments
      * @phpstan-param class-string<\Throwable> $expectedException
+     * @param array<string, mixed> $files
      */
     #[Test, DataProvider('actionDispatcherExamples')]
     public function actionDispatcher(
@@ -48,6 +80,7 @@ class ActionDispatcherTest extends TestCase
         string $expectedResponseBody = '',
         int $expectedStatus = 200,
         ?string $expectedException = null,
+        ?array $files = null,
     ): void {
         if ($expectedException) {
             $this->expectException($expectedException);
@@ -59,6 +92,10 @@ class ActionDispatcherTest extends TestCase
 
         $request = new ServerRequest('GET', $url)
             ->withAttribute(RouteResult::class, $routeResult);
+
+        if ($files) {
+            $request = $request->withUploadedFiles($files);
+        }
 
         $response = $dispatcher->handle($request);
 

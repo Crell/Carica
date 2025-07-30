@@ -39,6 +39,17 @@ interface ActionMetadata
     public array $requestAttributes { get; }
 
     /**
+     * A map of parameters that should receive a file upload.
+     *
+     * The key is the parameter name, the value is the file path tree.
+     *
+     * @see File
+     *
+     * @var array<string, string[]>
+     */
+    public array $uploadedFileParameters { get; }
+
+    /**
      * A list of additional middleware that should be called on this action.
      *
      * @var array<string|class-string>

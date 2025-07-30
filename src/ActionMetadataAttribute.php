@@ -35,6 +35,11 @@ class ActionMetadataAttribute implements ActionMetadata, ParseParameters, HasSub
     private(set) array $requestAttributes = [];
 
     /**
+     * @var array<string, string[]>
+     */
+    private(set) array $uploadedFileParameters = [];
+
+    /**
      * @param array<string, ActionParameter> $parameters
      * @return void
      */
@@ -57,6 +62,12 @@ class ActionMetadataAttribute implements ActionMetadata, ParseParameters, HasSub
             $parameters,
             afilter(static fn(ActionParameter $p) => $p instanceof RequestAttribute),
             amapWithKeys(static fn(RequestAttribute $param, string $name) => $param->name ?? $name),
+        );
+
+        $this->uploadedFileParameters = pipe(
+            $parameters,
+            afilter(static fn(ActionParameter $p) => $p instanceof File),
+            amapWithKeys(static fn(File $param, string $name) => $param->treePath ?? [$name]),
         );
     }
 

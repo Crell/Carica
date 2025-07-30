@@ -6,6 +6,7 @@ namespace Crell\HttpTools\Router;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -47,6 +48,10 @@ readonly class ActionDispatcher implements RequestHandlerInterface
             foreach ($actionDef->requestAttributes as $name => $target) {
                 $available[$name] = $request->getAttribute($target);
             }
+
+            foreach ($actionDef->uploadedFileParameters as $name => $tree) {
+                $available[$name] = $this->getFile($request, $tree);
+            }
         }
 
         // Call the action.
@@ -66,5 +71,19 @@ readonly class ActionDispatcher implements RequestHandlerInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @param string[] $path
+     */
+    private function getFile(ServerRequestInterface $request, array $path): ?UploadedFileInterface
+    {
+        $files = $request->getUploadedFiles();
+        $first = array_shift($path);
+        $file = &$files[$first];
+        foreach ($path as $segment) {
+            $file = $file[$segment] ?? null;
+        }
+        return $file;
     }
 }
