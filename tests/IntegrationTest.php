@@ -9,6 +9,7 @@ use Crell\Carica\Middleware\CacheHeaderMiddleware;
 use Crell\Carica\Middleware\DefaultContentTypeMiddleware;
 use Crell\Carica\Middleware\DeriveActionMetadataMiddleware;
 use Crell\Carica\Middleware\EnforceHeadMiddleware;
+use Crell\Carica\Middleware\ExceptionCatcherMiddleware;
 use Crell\Carica\Middleware\GenericMethodNotAllowedMiddleware;
 use Crell\Carica\Middleware\GenericNotFoundMiddleware;
 use Crell\Carica\Middleware\NormalizeArgumentTypesMiddleware;
@@ -127,6 +128,7 @@ class IntegrationTest extends TestCase
         $dispatcher = new ActionDispatcher(new JsonResultRenderer($responseBuilder));
 
         $stack = new StackMiddlewareKernel($dispatcher, [
+            new ExceptionCatcherMiddleware($responseBuilder),
             new DefaultContentTypeMiddleware('application/json'),
             new CacheHeaderMiddleware(),
             new EnforceHeadMiddleware($psr17Factory),
