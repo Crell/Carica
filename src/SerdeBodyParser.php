@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools;
+namespace Crell\Carica;
 
 use Crell\Serde\InvalidArrayKeyType;
 use Crell\Serde\MissingRequiredValueWhenDeserializing;

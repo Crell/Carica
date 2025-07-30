@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools;
+namespace Crell\Carica;
 
 use Crell\AttributeUtils\Analyzer;
-use Crell\HttpTools\Fakes\ActionExamples;
-use Crell\HttpTools\Fakes\ActionUnionTypeExample;
-use Crell\HttpTools\Fakes\SecondMiddleware;
-use Crell\HttpTools\Fakes\TracingMiddleware;
+use Crell\Carica\Fakes\ActionExamples;
+use Crell\Carica\Fakes\ActionUnionTypeExample;
+use Crell\Carica\Fakes\SecondMiddleware;
+use Crell\Carica\Fakes\TracingMiddleware;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

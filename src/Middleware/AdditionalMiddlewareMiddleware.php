@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Middleware;
+namespace Crell\Carica\Middleware;
 
-use Crell\HttpTools\Router\RouteResult;
-use Crell\HttpTools\Router\RouteSuccess;
-use Crell\HttpTools\StackMiddlewareKernel;
+use Crell\Carica\Router\RouteResult;
+use Crell\Carica\Router\RouteSuccess;
+use Crell\Carica\StackMiddlewareKernel;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

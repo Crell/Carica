@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools;
+namespace Crell\Carica;
 
-use Crell\HttpTools\Fakes\FakeContainer;
+use Crell\Carica\Fakes\FakeContainer;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools;
+namespace Crell\Carica;
 
-use Crell\HttpTools\Middleware\AdditionalMiddlewareMiddleware;
-use Crell\HttpTools\Middleware\CacheHeaderMiddleware;
-use Crell\HttpTools\Middleware\DefaultContentTypeMiddleware;
-use Crell\HttpTools\Middleware\DeriveActionMetadataMiddleware;
-use Crell\HttpTools\Middleware\EnforceHeadMiddleware;
-use Crell\HttpTools\Middleware\GenericMethodNotAllowedMiddleware;
-use Crell\HttpTools\Middleware\GenericNotFoundMiddleware;
-use Crell\HttpTools\Middleware\NormalizeArgumentTypesMiddleware;
-use Crell\HttpTools\Middleware\ParsedBodyMiddleware;
-use Crell\HttpTools\Middleware\QueryParametersMiddleware;
-use Crell\HttpTools\Router\ActionDispatcher;
-use Crell\HttpTools\Router\JsonResultRenderer;
-use Crell\HttpTools\Router\RouteResult;
-use Crell\HttpTools\Router\RouterMiddleware;
-use Crell\HttpTools\Router\RouteSuccess;
+use Crell\Carica\Middleware\AdditionalMiddlewareMiddleware;
+use Crell\Carica\Middleware\CacheHeaderMiddleware;
+use Crell\Carica\Middleware\DefaultContentTypeMiddleware;
+use Crell\Carica\Middleware\DeriveActionMetadataMiddleware;
+use Crell\Carica\Middleware\EnforceHeadMiddleware;
+use Crell\Carica\Middleware\GenericMethodNotAllowedMiddleware;
+use Crell\Carica\Middleware\GenericNotFoundMiddleware;
+use Crell\Carica\Middleware\NormalizeArgumentTypesMiddleware;
+use Crell\Carica\Middleware\ParsedBodyMiddleware;
+use Crell\Carica\Middleware\QueryParametersMiddleware;
+use Crell\Carica\Router\ActionDispatcher;
+use Crell\Carica\Router\JsonResultRenderer;
+use Crell\Carica\Router\RouteResult;
+use Crell\Carica\Router\RouterMiddleware;
+use Crell\Carica\Router\RouteSuccess;
 use Crell\Serde\SerdeCommon;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\ServerRequest;

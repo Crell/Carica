@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools;
+namespace Crell\Carica;
 
 use Crell\AttributeUtils\FromReflectionParameter;
 use Crell\AttributeUtils\TypeDef;

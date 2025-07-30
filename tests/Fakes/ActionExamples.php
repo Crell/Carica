@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Fakes;
+namespace Crell\Carica\Fakes;
 
-use Crell\HttpTools\Middleware;
-use Crell\HttpTools\ParsedBody;
-use Crell\HttpTools\Point;
-use Crell\HttpTools\RequestAttribute;
-use Crell\HttpTools\File;
+use Crell\Carica\Middleware;
+use Crell\Carica\ParsedBody;
+use Crell\Carica\Point;
+use Crell\Carica\RequestAttribute;
+use Crell\Carica\File;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 

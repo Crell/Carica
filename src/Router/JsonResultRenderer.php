@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Router;
+namespace Crell\Carica\Router;
 
-use Crell\HttpTools\ResponseBuilder;
+use Crell\Carica\ResponseBuilder;
 use Crell\Serde\Serde;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

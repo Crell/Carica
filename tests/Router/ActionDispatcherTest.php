@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Router;
+namespace Crell\Carica\Router;
 
-use Crell\HttpTools\ActionMetadata;
-use Crell\HttpTools\ExplicitActionMetadata;
-use Crell\HttpTools\File;
-use Crell\HttpTools\Point;
+use Crell\Carica\ActionMetadata;
+use Crell\Carica\ExplicitActionMetadata;
+use Crell\Carica\File;
+use Crell\Carica\Point;
 use Nyholm\Psr7\Response;
 use Nyholm\Psr7\ServerRequest;
 use Nyholm\Psr7\UploadedFile;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools;
+namespace Crell\Carica;
 
 #[\Attribute(\Attribute::TARGET_PARAMETER)]
 class RequestAttribute extends ActionParameter

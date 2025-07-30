@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Middleware;
+namespace Crell\Carica\Middleware;
 
 /**
  * Error sentinel value.

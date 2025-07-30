@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Router;
+namespace Crell\Carica\Router;
 
-use Crell\HttpTools\CallableNormalizer;
+use Crell\Carica\CallableNormalizer;
 use FastRoute\Dispatcher;
 use Psr\Http\Message\ServerRequestInterface;
 

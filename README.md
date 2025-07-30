@@ -1,10 +1,12 @@
-# PSR HTTP Tools
+# Carica
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
 [![Total Downloads][ico-downloads]][link-downloads]
 
-This library is a loose collection of tools to make working with the PSR HTTP stack a bit easier.
+Carica is a collection of loosely coupled tools for working with the PSR HTTP stack.
+
+*Carica* is the scientific name for the fig tree.
 
 ## Included tools
 
@@ -36,7 +38,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CODE_OF_CONDUCT](CODE_OF_CONDUCT
 
 ## Security
 
-If you discover any security related issues, please use the [GitHub security reporting form](https://github.com/Crell/HttpTools/security) rather than the issue queue.
+If you discover any security related issues, please use the [GitHub security reporting form](https://github.com/Crell/Carica/security) rather than the issue queue.
 
 ## Credits
 
@@ -47,13 +49,13 @@ If you discover any security related issues, please use the [GitHub security rep
 
 The Lesser GPL version 3 or later. Please see [License File](LICENSE.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/Crell/HttpTools.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/Crell/Carica.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/License-LGPLv3-green.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/Crell/HttpTools.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/Crell/Carica.svg?style=flat-square
 
-[link-packagist]: https://packagist.org/packages/Crell/HttpTools
-[link-scrutinizer]: https://scrutinizer-ci.com/g/Crell/HttpTools/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/Crell/HttpTools
-[link-downloads]: https://packagist.org/packages/Crell/HttpTools
+[link-packagist]: https://packagist.org/packages/Crell/Carica
+[link-scrutinizer]: https://scrutinizer-ci.com/g/Crell/Carica/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/Crell/Carica
+[link-downloads]: https://packagist.org/packages/Crell/Carica
 [link-author]: https://github.com/Crell
 [link-contributors]: ../../contributors

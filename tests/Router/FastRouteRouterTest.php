@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Router;
+namespace Crell\Carica\Router;
 
-use Crell\HttpTools\ExplicitActionMetadata;
+use Crell\Carica\ExplicitActionMetadata;
 use FastRoute\DataGenerator\GroupCountBased as GroupGenerator;
 use FastRoute\Dispatcher\GroupCountBased as GroupDispatcher;
 use FastRoute\RouteCollector;

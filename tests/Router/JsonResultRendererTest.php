@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Router;
+namespace Crell\Carica\Router;
 
-use Crell\HttpTools\Point;
-use Crell\HttpTools\ResponseBuilder;
+use Crell\Carica\Point;
+use Crell\Carica\ResponseBuilder;
 use Crell\Serde\SerdeCommon;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\ServerRequest;

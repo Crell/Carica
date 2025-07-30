@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Middleware;
+namespace Crell\Carica\Middleware;
 
 use Crell\AttributeUtils\FuncAnalyzer;
 use Crell\AttributeUtils\FunctionAnalyzer;
 use Crell\AttributeUtils\MemoryCacheFunctionAnalyzer;
-use Crell\HttpTools\ActionMetadataAttribute;
-use Crell\HttpTools\Router\RouteResult;
-use Crell\HttpTools\Router\RouteSuccess;
+use Crell\Carica\ActionMetadataAttribute;
+use Crell\Carica\Router\RouteResult;
+use Crell\Carica\Router\RouteSuccess;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

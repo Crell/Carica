@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Middleware;
+namespace Crell\Carica\Middleware;
 
-use Crell\HttpTools\Router\FakeNext;
+use Crell\Carica\Router\FakeNext;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;

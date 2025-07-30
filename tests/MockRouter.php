@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools;
+namespace Crell\Carica;
 
-use Crell\HttpTools\Router\Router;
-use Crell\HttpTools\Router\RouteResult;
+use Crell\Carica\Router\Router;
+use Crell\Carica\Router\RouteResult;
 use Psr\Http\Message\ServerRequestInterface;
 
 class MockRouter implements Router

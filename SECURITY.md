@@ -8,13 +8,13 @@ If you believe you've found a security issue in software that is maintained in t
 
 | Version | In scope | Source code |
 | ------- | -------- | ----------- |
-| latest  | ✅ | https://github.com/Crell/HttpTools |
+| latest  | ✅ | https://github.com/Crell/Carica |
 
 Only the latest stable release of this library is supported.  In general, bug and security fixes will not be backported unless there is a substantial imminent threat to users in not doing so.  
 
 # How to Submit a Report
 
-To submit a vulnerability report, please contact us through [GitHub](https://github.com/Crell/HttpTools/security). Your submission will be reviewed as soon as feasible, but as this is a volunteer project we cannot guarantee a response time.
+To submit a vulnerability report, please contact us through [GitHub](https://github.com/Crell/Carica/security). Your submission will be reviewed as soon as feasible, but as this is a volunteer project we cannot guarantee a response time.
 
 # Safe Harbor
 
@@ -34,4 +34,3 @@ Please submit a report to us before engaging in conduct that may be inconsistent
 * Include the version number of the vulnerable package in your report.
 * Providing a suggested fix is welcome, but not required, and we may choose to implement our own, based on your submitted fix or not.
 * This is a volunteer project. We will make every effort to respond to security reports in a timely manner, but that may be a week or two on the first contact.
-

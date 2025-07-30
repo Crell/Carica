@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Router\EventedRouter;
+namespace Crell\Carica\Router\EventedRouter;
 
-use Crell\HttpTools\Router\ActionResultNotRendered;
-use Crell\HttpTools\Router\ActionResultRenderer;
-use Crell\HttpTools\Router\EventedRouter\Events\HandleRenderResult;
+use Crell\Carica\Router\ActionResultNotRendered;
+use Crell\Carica\Router\ActionResultRenderer;
+use Crell\Carica\Router\EventedRouter\Events\HandleRenderResult;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -14,7 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * Handles rendering a route result by passing it to an event dispatcher.
  *
- * The event fired is Crell\HttpTools\Router\EventedRouter\Events\HandleRenderResult.
+ * The event fired is Crell\Carica\Router\EventedRouter\Events\HandleRenderResult.
  * It contains the request and action result, and can have a response set on it.
  * Setting the response will terminate the event.
  *

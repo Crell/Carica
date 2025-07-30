@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Router\EventedRouter\Events;
+namespace Crell\Carica\Router\EventedRouter\Events;
 
 use Psr\EventDispatcher\StoppableEventInterface;
 use Psr\Http\Message\ResponseInterface;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Router;
+namespace Crell\Carica\Router;
 
-use Crell\HttpTools\ActionMetadata;
-use Crell\HttpTools\Middleware\DeriveActionMetadataMiddleware;
+use Crell\Carica\ActionMetadata;
+use Crell\Carica\Middleware\DeriveActionMetadataMiddleware;
 
 readonly class RouteSuccess implements RouteResult
 {

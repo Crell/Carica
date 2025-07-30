@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Middleware;
+namespace Crell\Carica\Middleware;
 
-use Crell\HttpTools\ExplicitActionMetadata;
-use Crell\HttpTools\ParsedBody;
-use Crell\HttpTools\Point;
-use Crell\HttpTools\ResponseBuilder;
-use Crell\HttpTools\Router\FakeNext;
-use Crell\HttpTools\Router\RouteResult;
-use Crell\HttpTools\Router\RouteSuccess;
-use Crell\HttpTools\SerdeBodyParser;
+use Crell\Carica\ExplicitActionMetadata;
+use Crell\Carica\ParsedBody;
+use Crell\Carica\Point;
+use Crell\Carica\ResponseBuilder;
+use Crell\Carica\Router\FakeNext;
+use Crell\Carica\Router\RouteResult;
+use Crell\Carica\Router\RouteSuccess;
+use Crell\Carica\SerdeBodyParser;
 use Crell\Serde\SerdeCommon;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\ServerRequest;

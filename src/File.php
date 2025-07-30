@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools;
+namespace Crell\Carica;
 
 /**
  * Flags a parameter as wanting a PSR-7 uploaded file passed to it.

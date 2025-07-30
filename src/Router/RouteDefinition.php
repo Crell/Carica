@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Router;
+namespace Crell\Carica\Router;
 
-use Crell\HttpTools\ActionMetadata;
+use Crell\Carica\ActionMetadata;
 
 /**
  * A serializable definition of a route result, with the action definition pre-filled.

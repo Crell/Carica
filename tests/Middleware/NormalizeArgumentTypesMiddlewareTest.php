@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Middleware;
+namespace Crell\Carica\Middleware;
 
-use Crell\HttpTools\ExplicitActionMetadata;
-use Crell\HttpTools\HasX;
-use Crell\HttpTools\ParameterLoader;
-use Crell\HttpTools\Point;
-use Crell\HttpTools\ResponseBuilder;
-use Crell\HttpTools\Router\FakeNext;
-use Crell\HttpTools\Router\RouteResult;
-use Crell\HttpTools\Router\RouteSuccess;
+use Crell\Carica\ExplicitActionMetadata;
+use Crell\Carica\HasX;
+use Crell\Carica\ParameterLoader;
+use Crell\Carica\Point;
+use Crell\Carica\ResponseBuilder;
+use Crell\Carica\Router\FakeNext;
+use Crell\Carica\Router\RouteResult;
+use Crell\Carica\Router\RouteSuccess;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\Attributes\DataProvider;

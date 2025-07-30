@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Middleware;
+namespace Crell\Carica\Middleware;
 
-use Crell\HttpTools\ResponseBuilder;
-use Crell\HttpTools\Router\RouteMethodNotAllowed;
-use Crell\HttpTools\Router\RouteResult;
+use Crell\Carica\ResponseBuilder;
+use Crell\Carica\Router\RouteMethodNotAllowed;
+use Crell\Carica\Router\RouteResult;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

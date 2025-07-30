@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Router;
+namespace Crell\Carica\Router;
 
 use Nyholm\Psr7\Response;
 use Nyholm\Psr7\ServerRequest;

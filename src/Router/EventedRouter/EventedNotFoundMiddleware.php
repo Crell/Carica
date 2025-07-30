@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Router\EventedRouter;
+namespace Crell\Carica\Router\EventedRouter;
 
-use Crell\HttpTools\ResponseBuilder;
-use Crell\HttpTools\Router\EventedRouter\Events\HandleRouteNotFound;
-use Crell\HttpTools\Router\RouteNotFound;
-use Crell\HttpTools\Router\RouteResult;
+use Crell\Carica\ResponseBuilder;
+use Crell\Carica\Router\EventedRouter\Events\HandleRouteNotFound;
+use Crell\Carica\Router\RouteNotFound;
+use Crell\Carica\Router\RouteResult;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -17,7 +17,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 /**
  * Not-Found middleware that delegates handling to a PSR-14 event dispatcher.
  *
- * The event fired is Crell\HttpTools\Router\EventedRouter\Events\HandleRouteNotFound.
+ * The event fired is Crell\Carica\Router\EventedRouter\Events\HandleRouteNotFound.
  * It contains the request, and can have a response set on it.
  * Setting the response will terminate the event.
  *

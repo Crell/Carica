@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Crell\HttpTools\Middleware;
+namespace Crell\Carica\Middleware;
 
-use Crell\HttpTools\ExplicitActionMetadata;
-use Crell\HttpTools\Fakes\FakeContainer;
-use Crell\HttpTools\Fakes\TracingMiddleware;
-use Crell\HttpTools\Router\FakeNext;
-use Crell\HttpTools\Router\RouteResult;
-use Crell\HttpTools\Router\RouteSuccess;
+use Crell\Carica\ExplicitActionMetadata;
+use Crell\Carica\Fakes\FakeContainer;
+use Crell\Carica\Fakes\TracingMiddleware;
+use Crell\Carica\Router\FakeNext;
+use Crell\Carica\Router\RouteResult;
+use Crell\Carica\Router\RouteSuccess;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
