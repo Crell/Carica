@@ -123,26 +123,9 @@ class IntegrationTest extends TestCase
         ?\Closure $tests = null,
     ): void {
         $psr17Factory = new Psr17Factory();
-        $responseBuilder = new ResponseBuilder($psr17Factory, $psr17Factory);
+        $router = new MockRouter($routeResult);
 
-        $dispatcher = new ActionDispatcher(new JsonResultRenderer($responseBuilder));
-
-        $stack = new StackMiddlewareKernel($dispatcher, [
-            new ExceptionCatcherMiddleware($responseBuilder),
-            new DefaultContentTypeMiddleware('application/json'),
-            new CacheHeaderMiddleware(),
-            new EnforceHeadMiddleware($psr17Factory),
-            new RouterMiddleware(new MockRouter($routeResult)),
-            new GenericNotFoundMiddleware($responseBuilder),
-            new GenericMethodNotAllowedMiddleware($responseBuilder),
-            new DeriveActionMetadataMiddleware(),
-            new QueryParametersMiddleware(),
-            new NormalizeArgumentTypesMiddleware($responseBuilder),
-            new ParsedBodyMiddleware($responseBuilder, [
-                new SerdeBodyParser(new SerdeCommon()),
-            ]),
-            new AdditionalMiddlewareMiddleware(),
-        ]);
+        $stack = new StandardApplication($psr17Factory, $psr17Factory, $router);
 
         $response = $stack->handle($request);
 
