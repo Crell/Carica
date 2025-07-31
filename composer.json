@@ -1,7 +1,8 @@
 {
-    "name": "crell/http-tools",
+    "name": "crell/carica",
     "homepage": "https://github.com/Crell/Carica",
     "license": "LGPL-3.0-or-later",
+    "keywords": ["PSR-7", "PSR-15", "PSR-17", "Middleware", "Routing"],
     "authors": [
         {
             "name": "Larry Garfield",
