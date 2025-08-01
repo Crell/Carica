@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Crell\Carica\Middleware;
 
+use Crell\Carica\FakeNext;
 use Crell\Carica\ParsedBody;
 use Crell\Carica\Point;
 use Crell\Carica\RequestAttribute;
-use Crell\Carica\Router\FakeNext;
 use Crell\Carica\Router\RouteResult;
 use Crell\Carica\Router\RouteSuccess;
 use Nyholm\Psr7\ServerRequest;

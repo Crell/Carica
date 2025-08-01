@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Crell\Carica;
 
-use Crell\Carica\Router\FakeNext;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;

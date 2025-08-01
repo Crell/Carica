@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Crell\Carica\Router;
 
+use Crell\Carica\FakeNext;
 use Nyholm\Psr7\Response;
 use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\Attributes\Test;

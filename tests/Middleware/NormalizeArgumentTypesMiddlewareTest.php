@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Crell\Carica\Middleware;
 
 use Crell\Carica\ExplicitActionMetadata;
+use Crell\Carica\FakeNext;
 use Crell\Carica\HasX;
 use Crell\Carica\ParameterLoader;
 use Crell\Carica\Point;
 use Crell\Carica\ResponseBuilder;
-use Crell\Carica\Router\FakeNext;
 use Crell\Carica\Router\RouteResult;
 use Crell\Carica\Router\RouteSuccess;
 use Nyholm\Psr7\Factory\Psr17Factory;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Crell\Carica\Middleware;
 
+use Crell\Carica\FakeNext;
 use Crell\Carica\ResponseBuilder;
-use Crell\Carica\Router\FakeNext;
 use Crell\Carica\Router\RouteMethodNotAllowed;
 use Crell\Carica\Router\RouteNotFound;
 use Crell\Carica\Router\RouteResult;

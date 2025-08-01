@@ -2,8 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Crell\Carica\Router;
+namespace Crell\Carica;
 
+use Crell\Carica\Router\RouteMethodNotAllowed;
+use Crell\Carica\Router\RouteNotFound;
+use Crell\Carica\Router\RouteResult;
+use Crell\Carica\Router\RouteSuccess;
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
