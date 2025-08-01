@@ -37,4 +37,9 @@ class ActionExamples
     {
         return __FUNCTION__;
     }
+
+    public function simple(string $a): string
+    {
+        return __FUNCTION__;
+    }
 }
