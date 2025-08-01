@@ -157,6 +157,10 @@ Carica includes a number of middleware and related tools that are generically us
 
 Yet another Enum listing the different typical HTTP response codes used.
 
+### HttpMethod
+
+Yet another Enum listing the different typical HTTP methods used.
+
 ### `ResponseBuilder`
 
 ResponseBuilder is a simple convenience wrapper around the [PSR-17](https://www.php-fig.org/psr/psr-17/) factory classes.  It provides a single, easy to use "builder" class that produces common PSR-7 response objects types.  You may bring your own PSR-17 factory of your choice.
