@@ -61,6 +61,48 @@ readonly class RouteBuilder
     }
 
     /**
+     * Adds a POST route.
+     *
+     * @param string $route
+     * @param class-string|array{class-string, string} $action
+     * @param array<string, scalar> $extraArguments
+     * @return $this
+     * @see self::route()
+     */
+    public function post(string $route, string|array $action, array $extraArguments = []): self
+    {
+        return $this->route(['POST'], $route, $action, $extraArguments);
+    }
+
+    /**
+     * Adds a PUT route.
+     *
+     * @param string $route
+     * @param class-string|array{class-string, string} $action
+     * @param array<string, scalar> $extraArguments
+     * @return $this
+     * @see self::route()
+     */
+    public function put(string $route, string|array $action, array $extraArguments = []): self
+    {
+        return $this->route(['PUT'], $route, $action, $extraArguments);
+    }
+
+    /**
+     * Adds a DELETE route.
+     *
+     * @param string $route
+     * @param class-string|array{class-string, string} $action
+     * @param array<string, scalar> $extraArguments
+     * @return $this
+     * @see self::route()
+     */
+    public function delete(string $route, string|array $action, array $extraArguments = []): self
+    {
+        return $this->route(['DELETE'], $route, $action, $extraArguments);
+    }
+
+    /**
      * @param string|HttpMethod|array<string|HttpMethod> $httpMethod
      * @return string[]
      *   An array of HTTP method strings
