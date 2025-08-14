@@ -60,6 +60,14 @@ class FastRouteRouterTest extends TestCase
             'expectedResult' => new RouteSuccess(new FakeActions()->stringParam(...), ['extra' => 'value', 'name' => 'beep']),
         ];
 
+        yield 'invokable route def, placeholder route, extra args with overlap' => [
+            'route' => '/foo/{name}/baz',
+            'method' => 'GET',
+            'handler' => new RouteDefinition(FakeInvokableAction::class, new ExplicitActionMetadata(['key' => 'string']), ['extra' => 'value', 'name' => 'override']),
+            'request' => new ServerRequest('GET', '/foo/beep/baz'),
+            'expectedResult' => new RouteSuccess(new FakeActions()->stringParam(...), ['extra' => 'value', 'name' => 'override']),
+        ];
+
         yield 'not found' => [
             'route' => '/foo',
             'method' => 'GET',
