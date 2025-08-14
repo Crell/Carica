@@ -19,5 +19,7 @@ readonly class ExplicitActionMetadata implements ActionMetadata
         private(set) array $requestAttributes = [],
         private(set) array $additionalMiddleware = [],
         private(set) array $uploadedFileParameters = [],
+        private(set) ?UserAuthentication $authentication = null,
+        private(set) ?UserAuthorization $authorization = null,
     ) {}
 }

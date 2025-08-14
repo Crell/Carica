@@ -55,4 +55,23 @@ interface ActionMetadata
      * @var array<string|class-string>
      */
     public array $additionalMiddleware { get; }
+
+    /**
+     * An optional user authentication definition object.
+     *
+     * It is up to an appropriate middleware to know how to handle different
+     * authentication implementations.  Such a middleware SHOULD usually run
+     * before routing.
+     */
+    public ?UserAuthentication $authentication { get; }
+
+    /**
+     * An optional user authorization definition object.
+     *
+     * It is up to an appropriate middleware to know how to handle different
+     * authorization implementations.  Such a middleware MUST run after
+     * routing, so that per-route access can be incorporated.
+     */
+    public ?UserAuthorization $authorization { get; }
+
 }

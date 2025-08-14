@@ -39,6 +39,9 @@ class ActionMetadataAttribute implements ActionMetadata, ParseParameters, HasSub
      */
     private(set) array $uploadedFileParameters = [];
 
+    private(set) ?UserAuthentication $authentication = null;
+    private(set) ?UserAuthorization $authorization = null;
+
     /**
      * @param array<string, ActionParameter> $parameters
      * @return void
@@ -74,16 +77,10 @@ class ActionMetadataAttribute implements ActionMetadata, ParseParameters, HasSub
     public function subAttributes(): array
     {
         return [
-            Middleware::class => $this->setAdditionalMiddleware(...),
+            Middleware::class => fn(array $middleware) => $this->additionalMiddleware = array_map(prop('name'), $middleware),
+            UserAuthentication::class => fn(?UserAuthentication $auth) => $this->authentication = $auth,
+            UserAuthorization::class => fn(?UserAuthorization $auth) => $this->authorization = $auth,
         ];
-    }
-
-    /**
-     * @param array<string|class-string> $middleware
-     */
-    private function setAdditionalMiddleware(array $middleware): void
-    {
-        $this->additionalMiddleware = array_map(prop('name'), $middleware);
     }
 
     public function includeParametersByDefault(): bool
