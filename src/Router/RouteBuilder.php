@@ -10,6 +10,9 @@ use Crell\AttributeUtils\MemoryCacheAnalyzer;
 use Crell\Carica\ActionClass;
 use Crell\Carica\HttpMethod;
 
+/**
+ * @todo Remove this, assuming the PreParsingRouteCollector works as intended.
+ */
 readonly class RouteBuilder
 {
     public function __construct(
