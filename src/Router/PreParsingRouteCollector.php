@@ -11,12 +11,14 @@ use Crell\Carica\ActionClass;
 use FastRoute\DataGenerator;
 use FastRoute\RouteCollector;
 use FastRoute\RouteParser;
+use FastRoute\RouteParser\Std;
+use FastRoute\DataGenerator\GroupCountBased;
 
 class PreParsingRouteCollector extends RouteCollector
 {
     public function __construct(
-        RouteParser $routeParser,
-        DataGenerator $dataGenerator,
+        RouteParser $routeParser = new Std(),
+        DataGenerator $dataGenerator = new GroupCountBased(),
         private readonly ClassAnalyzer $analyzer = new MemoryCacheAnalyzer(new Analyzer()),
     ) {
         parent::__construct($routeParser, $dataGenerator);
@@ -24,6 +26,7 @@ class PreParsingRouteCollector extends RouteCollector
 
     /**
      * @param string $route
+     * @param string|array $handler
      * @phpstan-param class-string|array{class-string, string} $handler
      * @param array<string, scalar> $extraArguments
      */

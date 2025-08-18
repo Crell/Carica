@@ -6,10 +6,8 @@ namespace Crell\Carica\Router;
 
 use Crell\Carica\Fakes\ActionExamples;
 use Crell\Carica\Fakes\InvokableAction;
-use FastRoute\DataGenerator\GroupCountBased as RouteGenerator;
 use FastRoute\Dispatcher;
 use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
-use FastRoute\RouteParser\Std as RouteParser;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -99,7 +97,7 @@ class PreParsingRouteCollectorTest extends TestCase
     #[Test, DataProvider('routeExamples')]
     public function routeCollector(\Closure $routeCallback, \Closure $tests): void
     {
-        $collector = new PreParsingRouteCollector(new RouteParser(), new RouteGenerator());
+        $collector = new PreParsingRouteCollector();
 
         $routeCallback($collector);
 
