@@ -2,17 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Crell\Carica\Router;
+namespace Crell\Carica\Router\FastRoute;
 
 use Crell\AttributeUtils\Analyzer;
 use Crell\AttributeUtils\ClassAnalyzer;
 use Crell\AttributeUtils\MemoryCacheAnalyzer;
 use Crell\Carica\ActionClass;
+use Crell\Carica\Router\RouteDefinition;
 use FastRoute\DataGenerator;
+use FastRoute\DataGenerator\GroupCountBased;
 use FastRoute\RouteCollector;
 use FastRoute\RouteParser;
 use FastRoute\RouteParser\Std;
-use FastRoute\DataGenerator\GroupCountBased;
 
 class PreParsingRouteCollector extends RouteCollector
 {

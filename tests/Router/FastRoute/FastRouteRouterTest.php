@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Crell\Carica\Router;
 
 use Crell\Carica\ExplicitActionMetadata;
+use Crell\Carica\Router\FastRoute\FastRouteRouter;
 use FastRoute\DataGenerator\GroupCountBased as GroupGenerator;
 use FastRoute\Dispatcher\GroupCountBased as GroupDispatcher;
 use FastRoute\RouteCollector;

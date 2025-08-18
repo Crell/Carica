@@ -2,9 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Crell\Carica\Router;
+namespace Crell\Carica\Router\FastRoute;
 
 use Crell\Carica\CallableNormalizer;
+use Crell\Carica\Router\RouteDefinition;
+use Crell\Carica\Router\RouteMethodNotAllowed;
+use Crell\Carica\Router\RouteNotFound;
+use Crell\Carica\Router\Router;
+use Crell\Carica\Router\RouteResult;
+use Crell\Carica\Router\RouteSuccess;
 use FastRoute\Dispatcher;
 use Psr\Http\Message\ServerRequestInterface;
 

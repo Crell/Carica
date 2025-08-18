@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Crell\Carica\Router;
+namespace Crell\Carica\Router\FastRoute;
 
 use Crell\Carica\Fakes\ActionExamples;
 use Crell\Carica\Fakes\InvokableAction;
+use Crell\Carica\Router\RouteDefinition;
 use FastRoute\Dispatcher;
 use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
 use PHPUnit\Framework\Attributes\DataProvider;
