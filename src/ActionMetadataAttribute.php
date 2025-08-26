@@ -92,4 +92,17 @@ class ActionMetadataAttribute implements ActionMetadata, ParseParameters, HasSub
     {
         return ActionParameter::class;
     }
+
+    /**
+     * @param array<string, mixed> $input
+     */
+    public static function __set_state(array $input): self
+    {
+        $new = new self();
+        foreach ($input as $k => $v) {
+            $new->$k = $v;
+        }
+
+        return $new;
+    }
 }

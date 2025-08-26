@@ -23,4 +23,12 @@ readonly class RouteDefinition
         public ActionMetadata $actionDef,
         public array $extraArguments = [],
     ) {}
+
+    /**
+     * @param array<string, mixed> $input
+     */
+    public static function __set_state(array $input): self
+    {
+        return new self(...$input);
+    }
 }
