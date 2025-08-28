@@ -37,7 +37,7 @@ readonly class ExceptionCatcherMiddleware implements MiddlewareInterface
         try {
             return $handler->handle($request);
         } catch (\Throwable $e) {
-            $this->logger?->error('Uncaught exception in RestServer: {name}', [
+            $this->logger?->error('Uncaught exception: {name}', [
                 'name' => get_class($e),
                 'exception' => $e,
             ]);
