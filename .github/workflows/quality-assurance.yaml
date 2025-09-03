@@ -15,7 +15,7 @@ jobs:
                 composer-flags: [ '' ]
                 phpunit-flags: [ '--coverage-text' ]
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php }}
@@ -31,7 +31,7 @@ jobs:
                 php: [ '8.4' ]
                 composer-flags: [ '' ]
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php }}
@@ -39,3 +39,9 @@ jobs:
                   tools: composer:v2
             - run: composer install --no-progress ${{ matrix.composer-flags }}
             - run: vendor/bin/phpstan
+    spelling:
+        name: Typos check
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: crate-ci/typos@master
