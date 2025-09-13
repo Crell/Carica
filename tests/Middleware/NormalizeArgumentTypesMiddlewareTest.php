@@ -97,6 +97,13 @@ class NormalizeArgumentTypesMiddlewareTest extends TestCase
             'expectedValue' => 5,
         ];
 
+        // Values that are already objects should be ignored.
+        yield 'object to object (ignored)' => [
+            'type' => Point::class,
+            'value' => new Point(1, 2),
+            'expectedValue' => new Point(1, 2),
+        ];
+
         $pointLoader = new class implements ParameterLoader
         {
             public function load(float|int|string $value, string $type): ?object

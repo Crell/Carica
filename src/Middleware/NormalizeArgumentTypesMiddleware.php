@@ -44,6 +44,9 @@ class NormalizeArgumentTypesMiddleware implements MiddlewareInterface
         if ($result instanceof RouteSuccess && $result->actionDef?->parameterTypes !== null) {
             $newArgs = [];
             foreach (array_intersect_key($result->arguments, $result->actionDef->parameterTypes) as $name => $val) {
+                if (is_object($val)) {
+                    continue;
+                }
                 $normalizedValue = $this->normalizeValue($val, $result->actionDef->parameterTypes[$name]);
                 if ($normalizedValue instanceof CannotNormalizeValue) {
                     // @todo Make this pluggable?
