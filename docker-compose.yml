@@ -10,7 +10,7 @@ services:
             - '.:/app'
             - './phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf'
         ports:
-            - '20000:80'
+            - '40000:80'
 
     php-fpm:
         build: phpdocker/php-fpm
