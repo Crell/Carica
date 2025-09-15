@@ -8,6 +8,7 @@ use Crell\Serde\InvalidArrayKeyType;
 use Crell\Serde\MissingRequiredValueWhenDeserializing;
 use Crell\Serde\Serde;
 use Crell\Serde\TypeMismatch;
+use Psr\Log\LoggerInterface;
 
 class SerdeBodyParser implements BodyParser
 {
@@ -21,6 +22,7 @@ class SerdeBodyParser implements BodyParser
 
     public function __construct(
         private readonly Serde $serde,
+        private readonly ?LoggerInterface $logger = null,
     ) {}
 
     public function canParse(string $contentType, string $className): bool
@@ -35,13 +37,26 @@ class SerdeBodyParser implements BodyParser
         // There's no need to manufacture these test cases right now.
         // @codeCoverageIgnoreStart
         } catch (MissingRequiredValueWhenDeserializing $e) {
-            // @todo Log with more details.
+            $this->logger?->notice('Error unserializing request body to {class}.  {message}', [
+                'message' => $e->getMessage(),
+                'exception' => $e,
+                'class' => $e->class,
+                'unparsed_data' => $unparsed,
+            ]);
             return new BodyParserError(sprintf('The %s property is required.', $e->name));
         } catch (TypeMismatch $e) {
-            // @todo Log with more details.
+            $this->logger?->notice('Error unserializing request body.  {message}', [
+                'message' => $e->getMessage(),
+                'exception' => $e,
+                'unparsed_data' => $unparsed,
+            ]);
             return new BodyParserError(sprintf('The %s property has an invalid type.', $e->name));
         } catch (InvalidArrayKeyType $e) {
-            // @todo Log with more details.
+            $this->logger?->notice('Error unserializing request body.  {message}', [
+                'message' => $e->getMessage(),
+                'foundType' => $e->foundType,
+                'unparsed_data' => $unparsed,
+            ]);
             return new BodyParserError(sprintf('The %s property keys are invalid.', $e->field->serializedName));
         }
         // @codeCoverageIgnoreEnd
