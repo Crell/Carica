@@ -145,9 +145,61 @@ If you are not sure what to use, we recommend the [httpsoft/http-emitter](https:
 
 Notably, one important aspect of the above design is that it is router independent, but relies on the Router to do a fair bit of lifting.  By design, a router can be any class that implements the `Router` interface, which in practice will likely be small bridges that connect to an existing routing library.  The provided [`FastRouteRouter`](src/Router/FastRouteRouter.php) bridge serves as an example.
 
-There is no standard mechanism for configuring a router, nor even a standard syntax.  (Actually there is an IETF standard, but most PHP routers don't use it.)  Therefore, Carica does not provide any route configuration system.  Every router implementation will need its own, likely integrated with your DI container or other bootstrap logic.
+There is no standard mechanism for configuring a router, nor even a standard syntax.  (Actually there is an IETF standard, but most PHP routers don't use it.)  Therefore, Carica does not provide a common interface for configuring a router.  However, it does include a bridge to make FastRoute routes easier to register.  (See below.)
 
 Importantly, routers MUST NOT throw exceptions.  In case a route is not found, that's a normal return.  That allows for a trivially simple [`DelegatingRouter`](src/Router/DelegatingRouter.php), which allows stitching together multiple routers in serial, and allowing each to make an attempt to handle routing.  If one cannot, control passes to the next until either a router can handle it, or it just resolves into a NotFound case.
+
+### FastRoute bridge
+
+Carica includes two classes for use with FastRoute.  The first is a wrapper that implements the `Router` interface, which can be plugged directly into the `RouterMiddleware`.  It depends on a FastRoute `Dispatcher`, which is what FastRoute calls its prepared and ready-to-use routing logic.
+
+The second is a subclass of FastRoute's `RouteCollector`, which handles pre-computing all the static metadata about a route for better performance.  It's used almost the same way as FastRoute's normal approach, but instead of calling FastRoute's `cachedDispatcher()` utility function, you would do something like this:
+
+```php
+use Crell\Carica\Router\FastRoute\PreParsingRouteCollector;
+use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
+
+function fastRouteDispatcherFactory(bool $useCache, string $cacheFile, \Closure $callback): RouteDispatcher
+{
+// Load cached router if available.
+if ($useCache && file_exists($cacheFile)) {
+  $dispatchData = require $cacheFile;
+  if (!is_array($dispatchData)) {
+    throw new \RuntimeException('Invalid cache file "' . $cacheFile . '"');
+  }
+  return new RouteDispatcher($dispatchData);
+}
+
+// Load routes from configuration.
+$collector = new PreParsingRouteCollector();
+$callback($collector);
+$envMethod = 'routes' . $env;
+if (method_exists(self::class, $envMethod)) {
+  self::$envMethod($collector);
+}
+
+$dispatchData = $collector->getData();
+
+if ($useCache) {
+  file_put_contents(self::CacheFile, '<?php return ' . var_export($dispatchData, true) . ';');
+}
+
+return new RouteDispatcher($dispatchData);
+}
+
+fastRouteDispatcherFactory(true, 'cache/routing.cache', function (PreParsingRouteCollector $r) {
+    $r->addRoute('GET', '/user/{name}/{id:[0-9]+}', [SomeClass::class, 'aMethod']);
+    $r->get('/user/{id:[0-9]+}', AnInvokableClass::class), ['extra' => 'stuff'];
+})
+```
+
+Route groups work exactly the same as normal.  The handler parameter may be either an array containing a class name (of a controller class registered in a container by that ID) and a method, or just a class name that has an `__invoke()` method defined.  (Either works, the latter is preferred.)  There is also an optional last argument for an array of extra arguments to provide.  These will be included as though they were placeholders or query arguments, and available to inject into the action.
+
+The custom route collector will pre-derive all the information about the action we need and save that as the route result, avoiding any reflection at runtime.
+
+As shown, the `get()`, `post()`, etc. helper methods still work and take the same modified parameters.
+
+Call that from your container configuration or similar (either this function or make your own, as appropriate), and pass the resulting `Dispatcher` instance to `FastRouteRouter`.  You're all set!
 
 ## Generic middleware and tools
 
